@@ -1,0 +1,58 @@
+<form name='productForm'>
+<div id='productContainer'>
+
+<div ng-show='request.shopUI.productUI.container.showList'>
+<div class="modal-header">
+	<h3 class="modal-title" ng-click='goBackProduct()'>
+		<i class="glyphicon glyphicon-chevron-left"></i> {{request.shopUI.shopLanguageTable[request.shopUI.util.message.getShopNameCode(request.shopUI.shop)]}}
+		<span style='font-weight:normal;color:#cccccc;'>Manage Product</span>
+	</h3>
+</div>
+<div class="modal-body">
+	<table class="table table-striped">
+		<thead><tr><th style='color:#666666;width:60px;'><small>ID</small></th><th style='color:#666666;'><small>Name</small></th><th style='color:#666666;width:70px;'><small>Status</small></th></tr></thead>
+		<tbody><tr ng-repeat='product in request.shopUI.shop.productList' ng-click='request.shopUI.productUI.showDetail(request.shopUI, product, request.shopUI.productUI.backToManageProduct)'>
+			<td>{{product.productId}}</td><td><div><strong>{{request.shopUI.shopLanguageTable[request.shopUI.util.message.getProductNameFullCode(product)]}}</strong></div></td><td>{{product.status}}</td>
+		</tr></tbody>
+	</table>
+</div>
+<div class="modal-footer">
+	<button class="btn btn-primary" ng-click="goBackProduct()">OK</button>
+	<button class="btn btn-warning" ng-click="goBackProduct()">Cancel</button>
+</div>
+</div>
+
+<div ng-show='request.shopUI.productUI.container.showDetail'>
+<div class="modal-header">
+	<h3 class="modal-title" ng-click='goBackProduct()'>
+		<i class="glyphicon glyphicon-chevron-left"></i> {{request.shopUI.shopLanguageTable[request.shopUI.util.message.getShopNameCode(request.shopUI.shop)]}}
+		<span style='font-weight:normal;color:#cccccc;' ng-show='!request.shopUI.productUI.product.productId'>New Product</span>
+	</h3>
+</div>
+<div class="modal-body">
+    <div class="form-group">
+        <label for="productFullName" class="control-label">Full Name</label>
+        <input id='productFullName' class='form-control' type='text' ng-model='request.shopUI.shopLanguageTable[request.shopUI.util.message.getProductNameFullCode(request.shopUI.productUI.product)]' />
+    </div>
+    <div class="form-group">
+        <label for="productName" class="control-label">Short Name</label>
+        <input id='productName' class='form-control' type='text' ng-model='request.shopUI.shopLanguageTable[request.shopUI.util.message.getProductNameCode(request.shopUI.productUI.product)]' />
+    </div>
+    <div class="form-group">
+        <label for="productDescription" class="control-label">Description</label>
+        <textarea id='productDescription' class='form-control' type='text' ng-model='request.shopUI.shopLanguageTable[request.shopUI.util.message.getProductDescriptionCode(request.shopUI.productUI.product)]'></textarea>
+    </div>
+    <div class="form-group">
+        <label for="productStatus" class="control-label">Status</label>
+        <select id='productStatus' ng-model='request.shopUI.productUI.product.status' class='form-control' style='font-weight:bold;' ng-options="status for status in request.shopUI.referenceData.entityStatusList"></select>
+    </div>
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-primary" ng-click='request.shopUI.productUI.createProduct(request.shopUI)' ng-show='!request.shopUI.productUI.product.productId'>Create Product</button>
+	<button type="button" class="btn btn-primary" ng-click='request.shopUI.productUI.updateProduct(request.shopUI, request.shopUI.productUI.product)' ng-show='request.shopUI.productUI.product.productId'>Save</button>
+	<button class="btn btn-warning" ng-click="goBackProduct()">Cancel</button>
+</div>
+</div>
+
+</div>
+</form>

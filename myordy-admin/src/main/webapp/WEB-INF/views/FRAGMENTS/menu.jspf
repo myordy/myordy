@@ -1,0 +1,75 @@
+<div id='menuContainer'>
+<div ng-show='shopUI.menuUI.menuContainer.showMenuDetail'>
+	<h4 ng-click='shopUI.menuUI.goBack(shopUI, true)'><i class="glyphicon glyphicon-chevron-left"></i> <span style='font-weight:normal;color:#cccccc;'>Shop:</span> {{shopUI.shopLanguageTable[shopUI.util.message.getShopNameCode(shopUI.shop)]}}</h4>
+	<form>
+	    <div class="form-group">
+	        <label for="menuName" class="control-label">Menu Name</label>
+	        <input id='menuName' class='form-control' type='text' ng-model='shopUI.shopLanguageTable[shopUI.util.message.getMenuNameCode(shopUI.menuUI.menu)]' />
+	    </div>
+	    <div class="form-group">
+	        <label for="menuStatus" class="control-label">Status</label>
+	        <select id='menuStatus' ng-model='shopUI.menuUI.menu.status' class='form-control' style='font-weight:bold;' ng-options="status for status in shopUI.referenceData.entityStatusList"></select>
+	    </div>
+	    <div class="form-group">
+	    	<button type="button" class="btn btn-primary" ng-click='shopUI.menuUI.createMenu(shopUI)' ng-show='!shopUI.menuUI.menu.menuId'>Create Menu</button>
+	    	<button type="button" class="btn btn-primary" ng-click='shopUI.menuUI.updateMenu(shopUI, shopUI.menuUI.menu)' ng-show='shopUI.menuUI.menu.menuId'>Save</button>
+	    </div>
+	</form>
+
+	<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 voffset2" style="padding:0px 4px 0px 0px;" ng-show='shopUI.menuUI.menu.menuId'>
+		<div style=''>
+			<div class="row">
+				<div class="col-xs-6" style='padding-bottom:20px;'>Menu Items</div>
+				<div class="col-xs-6" style='padding-bottom:20px;'>
+					<a ng-click='shopUI.menuItemUI.showCreateMenuItemForm(shopUI, shopUI.menuUI.menu, null, false, true)'><h4><i class="glyphicon glyphicon-plus pull-right" style='margin-right:5px;'></i></h4></a>
+				</div>
+			</div>
+			<div>
+				<accordion>
+				    <accordion-group ng-repeat='menuItemL1 in shopUI.menuUI.menu.menuItems'>
+				        <accordion-heading ng-if='menuItemL1.category != null'>
+				        	<div ng-click='menuItemL1.open = !menuItemL1.open' style='outline: 0;'>
+				        		<h4 style='margin:0px;'>{{shopUI.shopLanguageTable[shopUI.util.message.getCategoryNameCode(menuItemL1.category)]}}
+				        			<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': menuItemL1.open, 'glyphicon-chevron-right': !menuItemL1.open}"></i>
+				        		</h4>
+				        	</div>
+				        </accordion-heading>
+						<div class="row" style='padding:0px 20px;'>
+							<h4>
+								<a ng-click='shopUI.menuItemUI.showMenuItemInModelBox(shopUI, shopUI.menuUI.menu, null, menuItemL1)'><i class="glyphicon glyphicon-pencil pull-right" style='margin-left:20px;'></i></a>
+								<a ng-click='shopUI.menuItemUI.showCreateMenuItemForm(shopUI, null, menuItemL1, false, false)'><i class="glyphicon glyphicon-plus pull-right" style='margin-right:5px;'></i></a>
+							</h4>
+						</div>
+						<div ng-repeat='menuItemL2 in menuItemL1.menuItems'>
+							<div ng-if='menuItemL2.category != null'>
+								<div class="row" style="color:#000;border-bottom: 2px dotted #c4c4c4;">
+									<div class="col-xs-12" ng-click='shopUI.menuItemUI.showMenuItemInModelBox(shopUI, null, menuItemL1, menuItemL2)'>
+										<h5 style='padding:7px 0px 2px 0px;margin-bottom:0px;'><a>{{shopUI.shopLanguageTable[shopUI.util.message.getCategoryNameCode(menuItemL2.category)]}}</a></h5>
+										<p>{{shopUI.shopLanguageTable[shopUI.util.message.getCategoryDescriptionCode(menuItemL2.category)]}}</p>
+									</div>
+								</div>
+							</div>
+							<div ng-if='menuItemL2.product != null'>
+								<div class="row" style="color:#000;border-bottom: 2px dotted #c4c4c4;">
+									<div class="col-xs-12" ng-click='shopUI.menuItemUI.showMenuItemInModelBox(shopUI, null, menuItemL1, menuItemL2)'>
+										<h5 style='padding:7px 0px 2px 0px;margin-bottom:0px;'><a>{{shopUI.shopLanguageTable[shopUI.util.message.getProductNameFullCode(menuItemL2.product)]}}</a></h5>
+										<p>{{shopUI.shopLanguageTable[shopUI.util.message.getProductDescriptionCode(menuItemL2.product)]}}</p>
+									</div>
+								</div>
+							</div>
+						</div>
+				    </accordion-group>
+				</accordion>
+			</div>
+		</div>
+	</div>
+	<div id="panel" class="col-xs-12 col-sm-6 col-md-6 col-lg-6 pull-right voffset2" style="padding:0px 0px 0px 4px;">
+		<div></div>
+	</div>
+</div>
+
+<script type="text/ng-template" id="menuItemModel.jspf">
+	<%@ include file="/WEB-INF/views/FRAGMENTS/menuItemModel.jspf" %>
+</script>
+
+</div>

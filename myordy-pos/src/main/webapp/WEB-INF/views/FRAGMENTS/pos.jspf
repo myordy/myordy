@@ -1,0 +1,173 @@
+<div id='posContainer'>
+
+<div ng-show='posUI.rootContainer.showMenuItemSecondLevel'>
+	<div class="row">
+		<%@ include file="/WEB-INF/views/FRAGMENTS/posOrderItem.jspf" %>
+	</div>	
+</div>
+
+<div ng-show='posUI.rootContainer.showMenuItem'>
+	<div class="row">
+		<div class="col-xs-8">
+			<h4><span style='color:red;' ng-click='posUI.posMenuItemUI.showHome(posUI);'>{{posUI.shopLanguageTable[posUI.util.message.getMenuNameCode(posUI.posMenuUI.menu)]}}</span> : {{posUI.shopLanguageTable[posUI.util.message.getCategoryNameCode(posUI.posMenuItemUI.menuItemL1.category)]}}</h4>
+		</div>
+		<div class="col-xs-4 text-right">
+			<button type="button" class="btn btn-primary" ng-click='posUI.posMenuItemUI.showHome(posUI);'>Back</button>
+		</div>
+	</div>
+	<div class="row" style="margin:10px 0px;">
+		<div ng-repeat='menuItemL2 in posUI.posMenuItemUI.menuItemL1.menuItems'
+				class="col-xs-12 col-sm-6 col-md-4 col-lg-3"
+				style="color:#000;border-bottom: 2px dotted #c4c4c4;padding:10px;"
+				ng-click='posUI.posMenuItemUI.showMenuItemInModelBox(posUI, menuItemL1, menuItemL2, null)'>
+			<div ng-if='menuItemL2.category'>
+				<h5 style='padding:7px 0px 2px 0px;margin-bottom:0px;'><a>{{posUI.shopLanguageTable[posUI.util.message.getCategoryNameCode(menuItemL2.category)]}}</a></h5>
+				<p ng-show='false'>{{posUI.shopLanguageTable[posUI.util.message.getCategoryDescriptionCode(menuItemL2.category)]}}</p>
+			</div>
+			<div ng-if='menuItemL2.product'>
+				<h5 style='padding:7px 0px 2px 0px;margin-bottom:0px;'><a>{{posUI.shopLanguageTable[posUI.util.message.getProductNameFullCode(menuItemL2.product)]}}</a></h5>
+				<p ng-show='false'>{{posUI.shopLanguageTable[posUI.util.message.getProductDescriptionCode(menuItemL2.product)]}}</p>
+			</div>
+		</div>
+	</div>
+</div>
+<div ng-show='posUI.rootContainer.showSpecials'>
+	<div class="row">
+		<div class="col-xs-8">
+			<h4>Specials</h4>
+		</div>
+		<div class="col-xs-4 text-right">
+			<button type="button" class="btn btn-primary" ng-click='posUI.posMenuItemUI.showHome(posUI);'>Back</button>
+		</div>
+	</div>
+	<div class="row" style="margin:10px 0px;">
+		<div ng-repeat='menuItemCombo in posUI.posMenuItemUI.specialsMenuItems'>
+			<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3"
+					style="color:#000;border-bottom: 2px dotted #c4c4c4;padding:10px;"
+					ng-click='posUI.posMenuItemUI.onMenuItemComboSelectFromMenu(posUI, menuItemCombo)'>
+				<h5><a style='font-weight:bold;'>
+					{{posUI.shopLanguageTable[posUI.util.message.getComboMenuItemNameFullCode(menuItemCombo)]}}
+				</a> - {{posUI.cartUI.getComboOrderItemPrice(posUI, menuItemCombo) / 100 | currency}}</h5>
+				<p>{{posUI.shopLanguageTable[posUI.util.message.getComboMenuItemDescriptionCode(menuItemCombo)]}}</p>
+			</div>
+		</div>
+	</div>
+
+</div>
+<div ng-show='posUI.rootContainer.showHome'>
+	<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 voffset2" style="padding:0px 4px 0px 0px;">
+		<div ng-show='posUI.container.showMenuSelect'>
+			<div ng-repeat='menu in posUI.shop.menuList' style='margin-bottom:10px;'>
+				<button type="button" class="btn btn-default btn-block" ng-click='posUI.posMenuUI.onMenuSelect(posUI, menu);'>{{posUI.shopLanguageTable[posUI.util.message.getMenuNameCode(menu)]}}</button>
+			</div>
+		</div>
+		<div ng-show='posUI.container.showMenu'>
+			<h4>Menu <span style='color:red;font-weight:bold;margin-right:20px;'>{{posUI.shopLanguageTable[posUI.util.message.getMenuNameCode(posUI.posMenuUI.menu)]}}</span>
+				<span><i ng-click="posUI.cartUI.cancel(posUI, true)" class="glyphicon glyphicon-remove" style='color:#bbbbbb;font-size:12pt;cursor: pointer;position: relative;top:3px;'></i></span></h4>
+			<div>
+				<div>
+					<div style='margin-bottom:15px;'>
+						<button class="btn btn-default btn-block" ng-click="posUI.posMenuItemUI.showSpecials(posUI);" style='font-weight:bold;text-align:left;color:red;'>Specials</button>
+					</div>
+					<div ng-repeat='menuItemL1 in posUI.posMenuUI.menu.menuItems' style='margin-bottom:15px;'>
+						<button ng-show='menuItemL1.status == "ACTIVE"' class="btn btn-default btn-block" ng-click="posUI.posMenuItemUI.onMenuItemClick(posUI, menuItemL1);" style='font-weight:bold;text-align:left;'>{{posUI.shopLanguageTable[posUI.util.message.getCategoryNameCode(menuItemL1.category)]}}</button>
+					</div>
+	<%--
+					<accordion>
+					    <accordion-group>
+					        <accordion-heading>
+					        	<div ng-click='menuItemCombo.open = !menuItemCombo.open' style='outline: 0;'><h4 style='margin:0px;color:red;'>Specials 
+					        	<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': menuItemCombo.open, 'glyphicon-chevron-right': !menuItemCombo.open}"></i></h4></div>
+					        </accordion-heading>
+							<div ng-repeat='menuItemCombo in posUI.util.menuItem.findComboMenuItemByTag(posUI.posMenuUI.menu.menuItemComboList, "[-SPECIAL-]")'>
+								<div class="row" style="color:#000;border-bottom: 2px dotted #c4c4c4;">
+									<div class="col-xs-12" ng-click='posUI.posMenuItemUI.onMenuItemComboSelectFromMenu(posUI, menuItemCombo)'>
+										<h5 style='padding:7px 0px 2px 0px;margin-bottom:0px;'><a>
+											{{posUI.shopLanguageTable[posUI.util.message.getComboMenuItemNameFullCode(menuItemCombo)]}}
+										</a></h5>
+										<p>{{posUI.shopLanguageTable[posUI.util.message.getComboMenuItemDescriptionCode(menuItemCombo)]}}</p>
+									</div>
+								</div>
+							</div>
+					    </accordion-group>
+	
+					    <accordion-group ng-repeat='menuItemL1 in posUI.posMenuUI.menu.menuItems'>
+					        <accordion-heading ng-if='menuItemL1.category != null'>
+					        	<div ng-click='menuItemL1.open = !menuItemL1.open' style='outline: 0;'><h4 style='margin:0px;'>{{posUI.shopLanguageTable[posUI.util.message.getCategoryNameCode(menuItemL1.category)]}}
+					        	<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': menuItemL1.open, 'glyphicon-chevron-right': !menuItemL1.open}"></i></h4></div>
+					        </accordion-heading>
+							<div ng-repeat='menuItemL2 in menuItemL1.menuItems'>
+								<div class="row" style="color:#000;border-bottom: 2px dotted #c4c4c4;">
+									<div class="col-xs-12" ng-click='posUI.posMenuItemUI.showMenuItemInModelBox(posUI, menuItemL1, menuItemL2, null)'>
+										<div ng-if='menuItemL2.category'>
+											<h5 style='padding:7px 0px 2px 0px;margin-bottom:0px;'><a>{{posUI.shopLanguageTable[posUI.util.message.getCategoryNameCode(menuItemL2.category)]}}</a></h5>
+											<p>{{posUI.shopLanguageTable[posUI.util.message.getCategoryDescriptionCode(menuItemL2.category)]}}</p>
+										</div>
+										<div ng-if='menuItemL2.product'>
+											<h5 style='padding:7px 0px 2px 0px;margin-bottom:0px;'><a>{{posUI.shopLanguageTable[posUI.util.message.getProductNameFullCode(menuItemL2.product)]}}</a></h5>
+											<p>{{posUI.shopLanguageTable[posUI.util.message.getProductDescriptionCode(menuItemL2.product)]}}</p>
+										</div>
+									</div>
+								</div>
+							</div>
+					    </accordion-group>
+					</accordion>
+	--%>
+	
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="panel" class="col-xs-12 col-sm-6 col-md-6 col-lg-6 pull-right voffset2" style="padding:0px 0px 0px 4px;">
+		<div>
+			<tabset>
+				<tab heading="Order" active='posUI.tabsetTabsContainer.showOrder'>
+					<%@ include file="/WEB-INF/views/FRAGMENTS/cartUI.jspf" %>
+				</tab>
+				<tab heading="Customer" ng-show='posUI.posCustomerSearchUI.userHasAccess' active='posUI.tabsetTabsContainer.showCustomer'>
+					<%@ include file="/WEB-INF/views/FRAGMENTS/posCustomer.jspf" %>
+				</tab>
+				<tab ng-show='!posUI.cartUI.userIsPOSOperator' active='posUI.tabsetTabsContainer.showMyOrderLog'>
+					<tab-heading>
+						<span ng-class="{'glow-text':posUI.previousOrdersUI.showCallShopErrorMessage}">My Order Log</span>
+					</tab-heading>
+					<%@ include file="/WEB-INF/views/FRAGMENTS/previousOrders.jspf" %>
+				</tab>
+				<tab ng-show='posUI.cartUI.userIsPOSOperator' active='posUI.tabsetTabsContainer.showOrderInbox'>
+					<tab-heading>
+						<span ng-class="{'glow-text':posUI.ordyInboxUI.glowNewOrderReceived}">Order Inbox</span>
+					</tab-heading>
+					<%@ include file="/WEB-INF/views/FRAGMENTS/orderInbox.jspf" %>
+				</tab>
+			</tabset>
+		</div>
+	</div>
+</div>
+
+
+<script type="text/ng-template" id="posOrderSearchModel.jspf">
+	<%@ include file="/WEB-INF/views/FRAGMENTS/posOrderSearchModel.jspf" %>
+</script>
+<script type="text/ng-template" id="posMenuItemModel.jspf">
+	<%@ include file="/WEB-INF/views/FRAGMENTS/posMenuItemModel.jspf" %>
+</script>
+<script type="text/ng-template" id="posMenuModel.jspf">
+	<%@ include file="/WEB-INF/views/FRAGMENTS/posMenuModel.jspf" %>
+</script>
+<script type="text/ng-template" id="posSuburbSelectModel.jspf">
+	<%@ include file="/WEB-INF/views/FRAGMENTS/posSuburbSelectModel.jspf" %>
+</script>
+<script type="text/ng-template" id="posCartTotalModel.jspf">
+	<%@ include file="/WEB-INF/views/FRAGMENTS/posCartTotalModel.jspf" %>
+</script>
+<script type="text/ng-template" id="loginUI.jspf">
+	<%@ include file="/WEB-INF/views/FRAGMENTS/loginUI.jspf" %>
+</script>
+<script type="text/ng-template" id="ordyPaymentModel.jspf">
+	<%@ include file="/WEB-INF/views/FRAGMENTS/ordyPaymentModel.jspf" %>
+</script>
+
+<script src="https://secure.ewaypayments.com/scripts/eCrypt.min.js"></script>
+
+
+</div>

@@ -1,0 +1,145 @@
+<div style='margin-bottom:20px;'>
+
+
+<div ng-show='posUI.cartUI.container.showOrderItems'>
+
+<!--	<div class="alert alert-danger" style='margin:10px 0px;'>Sorry Closed Today</div>-->
+
+	<%@ include file="/WEB-INF/views/FRAGMENTS/posOrder.jspf" %>
+	<div class='row'>
+		<div class="col-xs-6">
+			<button class="btn btn-primary" ng-click="posUI.posOrderSearchUI.show(posUI)" ng-show='posUI.posOrderSearchUI.userHasAccess'>Search Order</button>
+			<button class="btn btn-warning" ng-click="posUI.cartUI.cancel(posUI, true)" ng-show='posUI.container.showMenu'>Cancel Order</button>
+		</div>
+		<div class="col-xs-6 text-right" ng-show='posUI.cartUI.cart.ordyItemList.length > 0 || posUI.cartUI.cart.comboOrdyItemList.length > 0'>
+			<span style='color:red;font-weight:bold;margin-right:20px;'>{{posUI.shopLanguageTable[posUI.util.message.getMenuNameCode(posUI.posMenuUI.menu)]}}</span>
+			<button class="btn btn-primary" ng-click="posUI.cartUI.submitOrder(posUI)" ng-show='posUI.cartUI.userIsPOSOperator'>Submit Order</button>
+			<button class="btn btn-primary" ng-click="posUI.cartUI.onCartNextButtonClick(posUI)" ng-show='!posUI.cartUI.userIsPOSOperator' ng-disabled="false">Next</button>
+		</div>
+	</div>
+	<div class='row' ng-show='posUI.cartUI.userIsPOSOperator' style='margin-top:20px;'>
+		<div class="col-xs-12">
+			<a ng-click="posUI.cartUI.openCashDrawer(posUI)">Open Cash Drawer</a>
+		</div>
+	</div>
+</div>
+
+
+<div ng-show='posUI.cartUI.container.showOnlinePaymentForm' style='padding:10px'>
+<form name='onlinePaymentForm'>
+
+	<div class='row' style='margin-bottom:10px;'>
+		<div class="col-xs-12"><h4>Pay Online</h4></div>
+	</div>
+
+	<c:if test = "${not empty STRIPE_MYORDY_publishableKey}">
+    <div class="form-group">
+        <label class="control-label">Card Details</label> <span id="myordy-stripe-card-errors" style='color:red;'></span>
+	    <div id="myordy-stripe-card-element" class='form-control'>
+	      <!-- a Stripe Element will be inserted here. -->
+	    </div>
+    </div>
+	<div style='margin:10px 0px 40px 0px;'>
+		<button ng-show='!posUI.cartUI.cart.onlinePaymentStripeToken' class="btn btn-primary" ng-click="posUI.cartUI.processStripePayment(posUI)">Authorise Payment</button>
+		<button ng-show='posUI.cartUI.cart.onlinePaymentStripeToken' class="btn btn-danger" ng-click="posUI.cartUI.cancelStripePayment(posUI)">Cancel Payment</button>
+	</div>
+    </c:if>
+
+	<c:if test = "${not empty PAYPAL_MYORDY_clientToken}">
+		<script src="https://www.paypalobjects.com/api/checkout.js"></script>
+		<!-- Load the required components. -->
+		<script src="https://js.braintreegateway.com/web/3.15.0/js/client.min.js"></script>
+		<script src="https://js.braintreegateway.com/web/3.15.0/js/paypal-checkout.min.js"></script>
+		<div style='margin:0px 0px 40px 0px;'>
+			<div id="myordy-paypal-button"></div>
+			<div id="myordy-paypal-errors" style='color:red;margin:10px 0px;'></div>
+		</div>
+    </c:if>    
+
+	<div class='row'>
+		<div class="col-xs-6">
+			<button class="btn" ng-click="posUI.cartUI.showOrderItems(posUI)">Back</button>
+		</div>
+		<div class="col-xs-6 text-right" ng-show='posUI.cartUI.cart.ordyItemList.length > 0 || posUI.cartUI.cart.comboOrdyItemList.length > 0'>
+			<button ng-show='!posUI.cartUI.cart.onlinePaymentStripeToken' class="btn btn-info" ng-click="posUI.cartUI.showCustomerContactDetailsForm(posUI)">Skip Online Payment</button>
+			<button ng-show='posUI.cartUI.cart.onlinePaymentStripeToken' class="btn btn-primary" ng-click="posUI.cartUI.showCustomerContactDetailsForm(posUI)">Next</button>
+		</div>
+	</div>
+
+</form>
+</div>
+
+
+<div ng-show='posUI.cartUI.container.showCustomerContactDetailsForm' style='padding:10px'>
+<form name='customerContactDetailsForm'>
+
+	<div class='row' style='margin-bottom:10px;'>
+		<div class="col-xs-12"><h4>Your Contact Details</h4></div>
+	</div>
+
+    <div class="form-group" ng-class="{'has-error':customerContactDetailsForm.customerName.$invalid}">
+        <label for="customerName" class="control-label">Name</label>
+	    <input class='form-control' 
+	      	id='customerName'
+	        name="customerName"
+	        required
+	        ng-model="posUI.cartUI.cart.customerName" />
+    </div>
+
+    <div class="form-group" ng-class="{'has-error':customerContactDetailsForm.customerEmail.$invalid}">
+        <label for="customerEmail" class="control-label">Email</label>
+	    <input class='form-control' 
+	    	type='email'
+	      	id='customerEmail'
+	        name="customerEmail"
+	        required
+	        ng-model="posUI.cartUI.cart.customerEmail" />
+    </div>
+
+    <div class="form-group" ng-class="{'has-error':customerContactDetailsForm.customerMobileNumber.$invalid}">
+        <div><label for="mobile" class="control-label">Mobile Number</label></div>
+	    <div><input type="tel"
+			class='form-control col-xs-12' 
+	      	id='customerMobileNumber'
+	        name="customerMobileNumber"
+	        required
+	        ng-model="posUI.cartUI.cart.customerMobileNumber"
+	        preferred-countries="au"
+	        international-phone-number
+	        utils-script="/myordy-resources/resources/intl-tel-input/lib/libphonenumber/build/utils.js" /></div>
+    </div>
+
+	<div ng-show='posUI.util.menu.isDeliveryMenu(posUI.cartUI.cart.menu)'>
+		<div class="form-group" ng-class="{'has-error':customerContactDetailsForm.deliveryAddress.$invalid}">
+			<label for="deliveryAddress" class="control-label">Delivery Address</label>
+			<input id='deliveryAddress' name='deliveryAddress' class='form-control'
+					ng-model="posUI.cartUI.cart.deliveryAddress" ng-required='posUI.util.menu.isDeliveryMenu(posUI.cartUI.cart.menu)' ng-maxlength='255' />
+		</div>
+		<div class="form-group" ng-class="{'has-error':customerContactDetailsForm.deliverySuburb.$invalid}">
+			<label for="deliverySuburb" class="control-label">Delivery Suburb</label>
+			<select id='deliverySuburb' name='deliverySuburb' ng-model='posUI.cartUI.cart.deliverySuburb' class='form-control'
+					ng-options="suburb as suburb.postcode + ' ' + suburb.name for suburb in posUI.posMenuUI.servicedSuburbs track by suburb.suburbId"
+					ng-required='posUI.util.menu.isDeliveryMenu(posUI.cartUI.cart.menu)'></select>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="control-label">Your IP Address <small style='color:#cccccc;'>(tracked to prevent fraud)</small></label>
+		<span class='form-control'>{{userIpAddr}}</span>
+	</div>
+
+
+	<div class='row'>
+		<div class="col-xs-6">
+			<button class="btn" ng-click="posUI.cartUI.onCustomerContactDetailsBackButtonClick(posUI)">Back</button>
+		</div>
+		<div class="col-xs-6 text-right" ng-show='posUI.cartUI.cart.ordyItemList.length > 0 || posUI.cartUI.cart.comboOrdyItemList.length > 0'>
+			<button class="btn btn-primary" ng-disabled='customerContactDetailsForm.$invalid' ng-click="posUI.cartUI.submitOrderForCustomer(posUI)">Submit Order</button>
+		</div>
+	</div>
+
+</form>
+</div>
+
+
+</div>

@@ -1,0 +1,294 @@
+<div ng-show='posUI.posMenuItemUI.container.showDetail'>
+<form name='posOrderItemForm'>
+<div class="modal-header">
+	<h3 class="modal-title">
+		<span class="dropdown" dropdown ng-show='posUI.posMenuItemUI.menuItem.category'>
+		  <button type="button" class="btn btn-primary dropdown-toggle" dropdown-toggle style='font-size:20px;'>{{posUI.shopLanguageTable[posUI.util.message.getProductNameCode(posUI.posMenuItemUI.orderItem.menuItem.product)]}} <span class="caret"></span></button>
+		  <ul class="dropdown-menu">
+		    <li ng-repeat="menuItemL3 in posUI.posMenuItemUI.menuItem.menuItems | filter:posUI.util.menuItem.isProduct"
+		    	ng-click='posUI.posMenuItemUI.onOrderItemMenuItemChange(posUI, menuItemL3);'
+		    	style='margin:10px;'>
+		    	<a>{{posUI.shopLanguageTable[posUI.util.message.getProductNameCode(menuItemL3.product)]}}</a>
+		    </li>
+		  </ul>
+		</span>
+		<span ng-show='posUI.posMenuItemUI.parentMenuItem && posUI.posMenuItemUI.parentMenuItem.category' style='color:#cccccc;'>{{posUI.shopLanguageTable[posUI.util.message.getCategoryNameCode(posUI.posMenuItemUI.parentMenuItem.category)]}}</span>
+		<span ng-show='posUI.posMenuItemUI.menuItem && posUI.posMenuItemUI.menuItem.category' style='color:#999999;'>{{posUI.shopLanguageTable[posUI.util.message.getCategoryNameCode(posUI.posMenuItemUI.menuItem.category)]}}</span>
+		<span ng-show='posUI.posMenuItemUI.menuItem && posUI.posMenuItemUI.menuItem.product'>{{posUI.shopLanguageTable[posUI.util.message.getProductNameCode(posUI.posMenuItemUI.menuItem.product)]}}</span>
+	</h3>
+</div>
+<div class="modal-body">
+	<p ng-show='posUI.posMenuItemUI.menuItem.category'>{{posUI.shopLanguageTable[posUI.util.message.getCategoryDescriptionCode(posUI.posMenuItemUI.menuItem.category)]}}</p>
+	<p ng-show='posUI.posMenuItemUI.menuItem.product'>{{posUI.shopLanguageTable[posUI.util.message.getProductDescriptionCode(posUI.posMenuItemUI.menuItem.product)]}}</p>
+	<div>
+		<table class="table table-striped">
+			<tbody>
+				<tr>
+					<td style='vertical-align: middle;width:150px;'>
+						<div class="col-xs-12" style='padding:0px;'>
+							<div class="input-group">
+								<span class="input-group-btn">
+									<button type="button" ng-disabled='posUI.posMenuItemUI.orderItem.qty <= 1' class="btn btn-primary btn-number" ng-click='posUI.posMenuItemUI.minusQty(posUI);'><span class="glyphicon glyphicon-minus"></span></button>
+								</span>
+								<input type="text" name='qty' class="form-control input-number" style='font-weight:bold;' ng-model='posUI.posMenuItemUI.orderItem.qty' ng-pattern="/^[1-9]{1}[0-9]{0,7}$/" required readonly="readonly" />
+								<span class="input-group-btn">
+									<button type="button" class="btn btn-primary btn-number" ng-click='posUI.posMenuItemUI.plusQty(posUI);'><span class="glyphicon glyphicon-plus"></span></button>
+								</span>
+							</div>
+						</div>
+					</td>
+					<td style='vertical-align: middle;padding-left:0px;'>@ {{posUI.posMenuItemUI.orderItem.menuItem.price / 100 | currency}}</td>
+					<td class='text-right' style='vertical-align: middle;width:60px;'>{{(posUI.posMenuItemUI.orderItem.menuItem.price * posUI.posMenuItemUI.orderItem.qty) / 100 | currency}}</td>
+				</tr>
+
+				<tr ng-repeat='item in posUI.posMenuItemUI.orderItem.extraOptions.removeOptions track by $index'>
+					<td style='vertical-align: middle;' colspan="2">
+						<div>
+							<span class="glyphicon glyphicon-minus" style='color:red;'></span>
+							{{posUI.shopLanguageTable[posUI.util.message.getExtraOptionItemNameCode(item.option)]}}
+						</div></td>
+					<td class='text-right' style='vertical-align: middle;width:60px;'>{{item.amount / 100 | currency}}</td>
+				</tr>
+				<tr ng-repeat='item in posUI.posMenuItemUI.orderItem.extraOptions.addOptions track by $index'>
+					<td style='vertical-align: middle;' colspan="2">
+						<div>
+							<span class="glyphicon glyphicon-plus"></span>
+							{{posUI.shopLanguageTable[posUI.util.message.getExtraOptionItemNameCode(item.option)]}}
+						</div>
+					</td>
+					<td class='text-right' style='vertical-align: middle;width:60px;'>{{item.amount / 100 | currency}}</td>
+				</tr>
+				<tr ng-show='null != posUI.posMenuItemUI.orderItem.note'>
+					<td style='vertical-align: middle;' colspan="2">
+						<div><textarea class="form-control" rows="2" ng-model='posUI.posMenuItemUI.orderItem.note' style='color:red;'></textarea></div>
+					</td>
+					<td style='vertical-align: middle;width:60px;'>&nbsp;</td>
+				</tr>
+				<tr>
+					<td style='vertical-align: middle;padding:0px;' colspan="2">
+							<button class="btn btn-default" style="margin:10px 0px 10px 10px;" ng-click="posUI.posMenuItemUI.orderItem.note = '';" ng-disabled='null != posUI.posMenuItemUI.orderItem.note'>Add Note</button>
+							<button class="btn btn-default" style="margin:10px 0px 10px 10px;" ng-click="posUI.posMenuItemUI.showCustomise(posUI, posUI.posMenuItemUI.orderItem, posUI.posMenuItemUI.showDetail);" ng-show='null != posUI.posMenuItemUI.orderItem.menuItem.extraOptionConfig'>Customise</button>
+							<button ng-repeat='comboMenuItem in posUI.posMenuItemUI.posOrderItemOptionsUI.parentComboMenuItems'
+								class="btn btn-info" style="margin:10px 0px 10px 10px;"
+								ng-click="posUI.posMenuItemUI.posMenuComboItemUI.onMenuItemComboSelectFromMenuItem(posUI, comboMenuItem, posUI.posMenuItemUI.orderItem.qty, posUI.posMenuItemUI.showDetail);">{{
+								posUI.shopLanguageTable[posUI.util.message.getComboMenuItemNameCode(comboMenuItem)]
+								}}</button>
+					</td>
+					<td style='vertical-align: middle;width:60px;'>&nbsp;</td>
+				</tr>
+				<tr>
+					<td style='vertical-align: middle;'>&nbsp;</td>
+					<td style='vertical-align: middle;' class='text-right'>Total</td>
+					<td class='text-right' style='vertical-align: middle;width:60px;'><h3 class='text-right' style='margin:5px 0 0 0;'><span ng-show='posUI.posMenuItemUI.orderItem.menuItem.product'>{{posUI.posMenuItemUI.orderItem.amount / 100 | currency}}</span></h3></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+<div class="modal-footer">
+	<div class="row">
+		<div class="col-xs-4" style='text-align:left;'>
+			<button class="btn btn-danger" ng-click="posUI.posMenuItemUI.onDeleteFromCart(posUI);" ng-disabled='!posOrderItemForm.qty.$valid' ng-show='!posUI.posMenuItemUI.addOrderItemToCart'>Delete</button>
+		</div>
+		<div class="col-xs-8">
+			<button class="btn btn-primary" ng-click="ok()" ng-disabled='!posOrderItemForm.qty.$valid' ng-show='!posUI.posMenuItemUI.addOrderItemToCart'>Done</button>
+			<button class="btn btn-primary" ng-click="ok()" ng-disabled='!posOrderItemForm.qty.$valid' ng-show='posUI.posMenuItemUI.addOrderItemToCart'>Add to Cart</button>
+			<button class="btn btn-warning" ng-click="cancel()" ng-show='posUI.posMenuItemUI.addOrderItemToCart'>Cancel</button>
+		</div>
+	</div>
+</div>
+</form>
+</div>
+
+
+<div ng-show='posUI.posMenuItemUI.container.showCustomise'>
+<form name='posOrderItemshowCustomiseForm'>
+<div class="modal-header">
+	<div class='row'>
+		<div class="col-xs-12">
+			<h3 class="modal-title"><span style='color:#cccccc;'>Customise</span> {{posUI.shopLanguageTable[posUI.util.message.getProductNameFullCode(
+				posUI.posMenuItemUI.posOrderItemOptionsUI.orderItem.menuItem.product
+				)]}}</h3>
+		</div>
+	</div>
+</div>
+<div class="modal-body">
+	<div ng-show="posUI.posMenuItemUI.posOrderItemOptionsUI.orderItem.menuItem.extraOptionConfig && posUI.posMenuItemUI.posOrderItemOptionsUI.orderItem.menuItem.extraOptionConfig.extraOptionsGroupCode"
+	     style='height: 250px !important;overflow: scroll;'>
+		<table class="table table-striped">
+			<tbody>
+				<tr ng-repeat="item in posUI.posMenuItemUI.posOrderItemOptionsUI.options.extraItems.addOptions.extraOptionItemList | orderBy:'+name'">
+					<td>{{item.name}}</td>
+					<td style='vertical-align:middle;width:120px;'>
+						<div ng-show='null != item.removePrice'>
+							<button type="button" class="btn btn-warning btn-number" ng-click='posUI.posMenuItemUI.posOrderItemOptionsUI.orderOptionRemove(posUI, item);'>
+								<span class="glyphicon glyphicon-minus"></span></button> {{item.removePrice / 100 | currency}}
+						</div>
+						</td>
+					<td style='vertical-align:middle;width:120px;'>
+						<div ng-show='null != item.addPrice'>
+							<button type="button" class="btn btn-success btn-number" ng-click='posUI.posMenuItemUI.posOrderItemOptionsUI.orderOptionAdd(posUI, item);'>
+								<span class="glyphicon glyphicon-plus"></span></button> {{item.addPrice / 100 | currency}}
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div class='row' style='margin-top:20px;'>
+		<div class="col-xs-12">
+			<table class="table table-striped">
+				<tbody>
+					<tr ng-repeat='item in posUI.posMenuItemUI.posOrderItemOptionsUI.orderItem.extraOptions.removeOptions track by $index'>
+						<td style='vertical-align: middle;'><div><span class="glyphicon glyphicon-minus" style='color:red;'></span> {{posUI.shopLanguageTable[posUI.util.message.getExtraOptionItemNameCode(item.option)]}}</div></td>
+						<td class='text-right' style='width:60px;'><button class="btn btn-danger" ng-click="posUI.posMenuItemUI.posOrderItemOptionsUI.removeOptionDelete(posUI, $index);"><span class="glyphicon glyphicon-remove"></span></button></td>
+						<td class='text-right' style='vertical-align: middle;width:80px;'>{{item.option.removePrice / 100 | currency}}</td>
+					</tr>
+					<tr ng-repeat='item in posUI.posMenuItemUI.posOrderItemOptionsUI.orderItem.extraOptions.addOptions track by $index'>
+						<td style='vertical-align: middle;'><div><span class="glyphicon glyphicon-plus"></span> {{posUI.shopLanguageTable[posUI.util.message.getExtraOptionItemNameCode(item.option)]}}</div></td>
+						<td class='text-right' style='width:60px;'><button class="btn btn-danger" ng-click="posUI.posMenuItemUI.posOrderItemOptionsUI.addOptionDelete(posUI, $index);"><span class="glyphicon glyphicon-remove"></span></button></td>
+						<td class='text-right' style='vertical-align: middle;width:80px;'>{{item.option.addPrice / 100 | currency}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+<div class="modal-footer">
+	<button class="btn btn-primary" ng-click="posUI.posMenuItemUI.posOrderItemOptionsUI.onDoneCallback(posUI);">Done</button>
+</div>
+</form>
+</div>
+
+
+
+
+<div ng-show='posUI.posMenuItemUI.container.comboMenuItem'>
+<form name='posOrderItemsComboItemForm'>
+<div class="modal-header">
+	<div class='row'>
+		<div class="col-xs-12">
+			<h3 class="modal-title">{{posUI.shopLanguageTable[posUI.util.message.getComboMenuItemNameFullCode(posUI.posMenuItemUI.posMenuComboItemUI.comboOrderItem.comboMenuItem)]}}</h3>
+		</div>
+	</div>
+	<div class='row'>
+		<div class="col-xs-12">
+			<div style='width:130px;margin-top:5px;'>
+				<div class="input-group">
+					<span class="input-group-btn">
+						<button type="button" ng-disabled='posUI.posMenuItemUI.posMenuComboItemUI.comboOrderItem.qty <= 1' class="btn btn-primary btn-number" ng-click='posUI.posMenuItemUI.posMenuComboItemUI.minusQty(posUI);'><span class="glyphicon glyphicon-minus"></span></button>
+					</span>
+					<input type="text" name='qty' class="form-control input-number" style='font-weight:bold;' ng-model='posUI.posMenuItemUI.posMenuComboItemUI.comboOrderItem.qty' ng-pattern="/^[1-9]{1}[0-9]{0,7}$/" required readonly="readonly" />
+					<span class="input-group-btn">
+						<button type="button" class="btn btn-primary btn-number" ng-click='posUI.posMenuItemUI.posMenuComboItemUI.plusQty(posUI);'><span class="glyphicon glyphicon-plus"></span></button>
+					</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal-body">
+
+<p>{{posUI.shopLanguageTable[posUI.util.message.getComboMenuItemDescriptionCode(posUI.posMenuItemUI.posMenuComboItemUI.comboOrderItem.comboMenuItem)]}}</p>
+<div class="row" style='padding:0px;'>
+	<div class="col-xs-12">
+		<button ng-repeat='comboOption in posUI.posMenuItemUI.posMenuComboItemUI.comboOrderItem.comboMenuItem.comboOptionList'
+			ng-click='posUI.posMenuItemUI.posMenuComboItemUI.showComboOptionSelect(posUI, comboOption);'
+			class="btn btn-info" style="margin-left:15px;">{{
+				posUI.shopLanguageTable[posUI.util.message.getComboMenuItemOptionNameFullCode(comboOption)]
+			}}</button>
+	</div>
+</div>
+
+<table class="table table-striped" style='margin-top:10px;'>
+	<tbody>
+		<tr ng-repeat='ordyItem in posUI.posMenuItemUI.posMenuComboItemUI.comboOrderItem.orderItems'>
+			<td>
+				<div>
+					<strong>{{posUI.shopLanguageTable[posUI.util.message.getProductNameFullCode(ordyItem.orderItem.menuItem.product)]}}</strong>
+				</div>
+				<div style='margin:10px 0px;width:130px;'>
+					<div class="input-group">
+						<span class="input-group-btn">
+							<button type="button" ng-disabled='ordyItem.qty <= 1' class="btn btn-primary btn-number" ng-click='posUI.posMenuItemUI.posMenuComboItemUI.minusQtyChoice(posUI, ordyItem);'><span class="glyphicon glyphicon-minus"></span></button>
+						</span>
+						<input type="text" name='qty' class="form-control input-number" style='font-weight:bold;' ng-model='ordyItem.qty' ng-pattern="/^[1-9]{1}[0-9]{0,7}$/" required readonly="readonly" />
+						<span class="input-group-btn">
+							<button type="button" class="btn btn-primary btn-number" ng-click='posUI.posMenuItemUI.posMenuComboItemUI.plusQtyChoice(posUI, ordyItem);'><span class="glyphicon glyphicon-plus"></span></button>
+						</span>
+					</div>
+				</div>
+				<div ng-repeat='extraOption in ordyItem.orderItem.extraOptions.removeOptions track by $index'>
+					<span class="glyphicon glyphicon-minus" style='color:red;'></span>
+					{{posUI.shopLanguageTable[posUI.util.message.getExtraOptionItemNameCode(extraOption.option)]}}
+				</div>
+				<div ng-repeat='extraOption in ordyItem.orderItem.extraOptions.addOptions track by $index'>
+					<span class="glyphicon glyphicon-plus"></span>
+					{{posUI.shopLanguageTable[posUI.util.message.getExtraOptionItemNameCode(extraOption.option)]}}
+				</div>
+
+				<div ng-show='null != ordyItem.orderItem.note' style='color:red;margin-top:10px;'><textarea class="form-control" rows="2" ng-model='ordyItem.orderItem.note' style='color:red;'></textarea></div>
+
+				<div style='margin-top:15px;'>
+					<button class="btn btn--default"  style="margin-left:15px;" ng-click="ordyItem.orderItem.note = '';" ng-disabled='null != ordyItem.orderItem.note'>Add Note</button>
+					<button class="btn btn--default" style="margin-left:15px;" ng-click="posUI.posMenuItemUI.showCustomise(posUI, ordyItem.orderItem, posUI.posMenuItemUI.posMenuComboItemUI.onCustomiseDone);" ng-show='null != ordyItem.orderItem.menuItem.extraOptionConfig'>Customise</button>
+				</div>
+				
+			</td>
+			<td class='text-right'><button class="btn btn-danger" style="margin-left:15px;"
+						ng-click='posUI.posMenuItemUI.posMenuComboItemUI.onComboOptionItemRemove(posUI, $index);'><span class="glyphicon glyphicon-remove"></span></button></td>
+		</tr>
+	</tbody>
+	<tfoot><tr><td class='text-right'>Total</td><td class='text-right'><h3 style='margin:0px;padding:0px;'><strong>{{posUI.posMenuItemUI.posMenuComboItemUI.comboOrderItem.amount / 100 | currency}}</strong></h3></td></tr></tfoot>
+</table>
+
+<div class="row">
+	<div class="col-xs-12">
+
+		<div class="alert alert-danger" role="alert" ng-repeat='errorCode in posUI.posMenuItemUI.posMenuComboItemUI.comboOrderItemValidationResult.errorMessageList'>
+		  <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+		  <span class="sr-only">Error:</span> {{errorCode}}
+		</div>
+	</div>
+</div>
+</div>
+
+<div class="modal-footer">
+	<div class="row">
+		<div class="col-xs-4" style='text-align:left;'>
+			<button class="btn btn-danger" ng-click="posUI.posMenuItemUI.onDeleteComboItemFromCart(posUI);" ng-show='!posUI.posMenuItemUI.posMenuComboItemUI.addOrderItemToCart'>Delete</button>
+		</div>
+		<div class="col-xs-8">
+			<button class="btn btn-primary" ng-click="posUI.posMenuItemUI.posMenuComboItemUI.onOrderItemUpdateDone(posUI)" ng-show='!posUI.posMenuItemUI.posMenuComboItemUI.addOrderItemToCart'>Done</button>
+			<button class="btn btn-primary" ng-click="posUI.posMenuItemUI.posMenuComboItemUI.onAddToCart(posUI);" ng-show='posUI.posMenuItemUI.posMenuComboItemUI.addOrderItemToCart'>Add to Cart</button>
+			<button class="btn btn-warning" ng-click="posUI.posMenuItemUI.posMenuComboItemUI.onCancel(posUI)" ng-show='posUI.posMenuItemUI.posMenuComboItemUI.addOrderItemToCart'>Cancel</button>
+		</div>
+	</div>
+</div>
+</form>
+</div>
+
+
+<div ng-show='posUI.posMenuItemUI.container.comboMenuItemChoice'>
+<form name='posOrderItemsComboItemForm'>
+<div class="modal-header">
+	<div class='row'>
+		<div class="col-xs-12">
+			<h3 class="modal-title">{{posUI.shopLanguageTable[posUI.util.message.getComboMenuItemOptionNameFullCode(posUI.posMenuItemUI.posMenuComboItemUI.comboOption)]}}</h3>
+		</div>
+	</div>
+</div>
+<div class="modal-body">
+	<table class="table table-striped">
+		<tbody>
+			<tr ng-repeat='menuItem in posUI.posMenuItemUI.posMenuComboItemUI.comboOptionSelectProductMenuItems'
+				ng-click='posUI.posMenuItemUI.posMenuComboItemUI.onComboOptionSelect(posUI, menuItem)'><td style='vertical-align: middle;'>{{posUI.shopLanguageTable[posUI.util.message.getProductNameFullCode(menuItem.product)]}}</td></tr>
+		</tbody>
+	</table>
+</div>
+<div class="modal-footer">
+	<button class="btn btn-warning" ng-click="posUI.posMenuItemUI.showComboMenuItem(posUI)">Cancel</button>
+</div>
+</form>
+</div>
+

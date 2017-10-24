@@ -1,0 +1,291 @@
+<div class='media-screen-only'>
+<div class="modal-header">
+	
+	<div class='row'>
+		<div class="col-xs-10">
+			<h3 class="modal-title">{{posUI.posOrderSearchUI.view.title}}</h3>
+		</div>
+		<div class="col-xs-2 text-right" ng-click='cancel();' style='cursor: pointer;'>
+			<span class="glyphicon glyphicon-remove" aria-hidden="true" style='color:red;'></span>
+		</div>
+	</div>
+
+</div>
+<div class="modal-body">
+
+<div ng-show='posUI.posOrderSearchUI.container.showSearch'>
+<form name='posOrderSearchForm'>
+
+    <div class="form-group" ng-class="{'has-error':posOrderSearchForm.orderTimeFrom.$invalid}">
+        <label for="orderTimeFrom" class="control-label">Order Date</label>
+        <input id='orderTimeFrom' type="date" name='orderTimeFrom' class="form-control" ng-model="posUI.posOrderSearchUI.searchRequest.orderTimeFrom" required />
+    </div>
+    <div class="form-group" ng-class="{'has-error':posOrderSearchForm.customerNumber.$invalid}">
+        <label for="customerNumber" class="control-label">Customer Number</label>
+        <input id='customerNumber' type="number" ng-pattern="/^[0-9]{1,7}$/" name='customerNumber' class="form-control" ng-model="posUI.posOrderSearchUI.searchRequest.customerNumber" />
+    </div>
+
+	<div class='row'>
+		<div class="col-xs-12 text-right">
+			<button  ng-disabled='posOrderSearchForm.$invalid' type='submit' class="btn btn-primary" ng-click="posUI.posOrderSearchUI.search(posUI)" style='margin-right:10px;'>Search</button>
+		</div>
+	</div>
+
+	<div class='row' style='margin-top:10px;'>
+		<div class="col-xs-12">
+			<table class="table table-striped">
+				<thead><tr><th style='color:#666666;'><small>Order Time</small></th><th style='color:#666666;'><small>Menu</small></th><th style='color:#666666;'><small>Customer</small></th><th class='text-right' style='width:80px;color:#666666;'><small>Amount</small></th></tr></thead>
+				<tbody>
+					<tr ng-repeat='order in posUI.posOrderSearchUI.searchResult.items' ng-click='posUI.posOrderSearchUI.showOrderDetails(posUI, order.ordyId, $index);'
+						 ng-class="{'danger':(order.fixedAmount || order.discountPercent)}">
+						<td class=''>{{order.orderTime | date:"dd/MM/yyyy h:mm a"}}</td>
+						<td class=''>{{posUI.shopLanguageTable[posUI.util.message.getMenuNameCode({menuId:order.menuId})]}}</td>
+						<td class=''>{{order.customerName}}</td>
+						<td class='text-right'>{{posUI.cartUI.getFinalTotalAmount(posUI, order) / 100 | currency}}</td>
+					</tr>
+				</tbody>
+			</table>
+			<div class='text-center' ng-show='posUI.posOrderSearchUI.searchResult.items.length > 0'>
+				<pagination ng-change='posUI.posOrderSearchUI.search(posUI)'
+					total-items="posUI.posOrderSearchUI.searchResult.totalItems" ng-model="posUI.posOrderSearchUI.searchRequest.currentPageNumber" 
+					boundary-links="true" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" max-size='5'></pagination>
+			</div>
+		</div>
+	</div>
+</form>
+</div>
+
+
+<div ng-show='posUI.posOrderSearchUI.container.showDetail'>
+<form name='posOrderDetailForm'>
+	<div class='row'>
+		<div class="col-xs-6" style='margin:10px 0px;'>
+			<div><span style='color:#3d3d3d;'>Order Number:</span> <strong>{{posUI.posOrderSearchUI.order.ordyNumber}}</strong></div>
+			<div><span style='color:#3d3d3d;'>Order Time:</span> <span>{{posUI.posOrderSearchUI.order.orderTime | date:"dd/MM/yyyy h:mm a"}}</span></div>
+		</div>
+		<div class="col-xs-6 text-right" style='margin:10px 0px;'>
+			<span style='color:#3d3d3d;'>Status:</span> <strong>{{posUI.posOrderSearchUI.order.ordyStatus}}</strong>
+		</div>
+	</div>
+	<div class='row'>
+		<div class="col-xs-12">
+			<tabset>
+				<tab heading="Order">
+					<div>
+					<table class="table table-striped">
+						<thead><tr><th style='color:#666666;'><small>Item</small></th><th class='text-right' style='width:80px;color:#666666;'><small>Amount</small></th></tr></thead>
+						<tbody>
+
+							<tr ng-repeat='ordyItemCombo in posUI.posOrderSearchUI.order.comboOrdyItemList'>
+								<td>
+									<div>
+										<strong>
+											<span style='color:red;' ng-show='ordyItemCombo.qty > 1'>{{ordyItemCombo.qty}} x </span>
+											{{posUI.shopLanguageTable[posUI.util.message.getComboMenuItemNameFullCode(
+												posUI.util.menuItem.findComboMenuItem(posUI.posMenuUI.menuItemMap, ordyItemCombo.menuItemComboId)
+											)]}}
+										</strong>
+									</div>
+									<ul>
+										<li ng-repeat='ordyItem in ordyItemCombo.orderItems'>
+											<div>
+												<strong>
+													<span style='color:red;' ng-show='ordyItem.qty > 1'>{{ordyItem.qty}} x </span>
+													{{posUI.shopLanguageTable[posUI.util.message.getProductNameFullCode(
+													posUI.util.menuItem.findMenuItem(posUI.posMenuUI.menuItemMap, ordyItem.menuItemId).product
+													)]}}
+												</strong>
+											</div>
+											<div ng-repeat='extraOption in ordyItem.extraOptions.removeOptions track by $index'>
+												<span class="glyphicon glyphicon-minus" style='color:red;'></span>
+												{{posUI.shopLanguageTable[posUI.util.message.getExtraOptionItemNameCode(extraOption.option)]}}
+											</div>
+											<div ng-repeat='extraOption in ordyItem.extraOptions.addOptions track by $index'>
+												<span class="glyphicon glyphicon-plus"></span>
+												{{posUI.shopLanguageTable[posUI.util.message.getExtraOptionItemNameCode(extraOption.option)]}}
+											</div>
+							
+											<div style='color:red;'>{{ordyItem.orderItem.note}}</div>
+										</li>
+
+
+										<li ng-repeat='ordyItemComboSub in ordyItemCombo.ordyItemsComboSub'>
+											<div>
+												<strong>
+													<span style='color:red;' ng-show='ordyItemComboSub.ordyItemComboSub.qty > 1'>{{ordyItemComboSub.ordyItemComboSub.qty}} x </span>
+													{{posUI.shopLanguageTable[posUI.util.message.getComboMenuItemNameFullCode(
+													posUI.util.menuItem.findComboMenuItem(posUI.posMenuUI.menuItemMap, ordyItemComboSub.menuItemComboId)
+													)]}}
+												</strong>
+											</div>
+											<ul>
+												<li ng-repeat='ordyItem in ordyItemComboSub.orderItems'>
+													<div>
+														<span style='color:red;' ng-show='ordyItem.qty > 1'>{{ordyItem.qty}} x </span>
+														{{posUI.shopLanguageTable[posUI.util.message.getProductNameFullCode(
+														posUI.util.menuItem.findMenuItem(posUI.posMenuUI.menuItemMap, ordyItem.menuItemId).product
+														)]}}
+													</div>
+													<div ng-repeat='extraOption in ordyItem.extraOptions.removeOptions track by $index'>
+														<span class="glyphicon glyphicon-minus" style='color:red;'></span>
+														{{posUI.shopLanguageTable[posUI.util.message.getExtraOptionItemNameCode(extraOption.option)]}}
+													</div>
+													<div ng-repeat='extraOption in ordyItem.extraOptions.addOptions track by $index'>
+														<span class="glyphicon glyphicon-plus"></span>
+														{{posUI.shopLanguageTable[posUI.util.message.getExtraOptionItemNameCode(extraOption.option)]}}
+													</div>
+													<div ng-show='null != ordyItem.orderItem.note' style='color:red;'>{{ordyItem.orderItem.note}}</div>
+												</li>
+											</ul>
+										</li>
+
+
+									</ul>
+								</td>
+								<td class='text-right'>{{ordyItemCombo.amount / 100 | currency}}</td>
+							</tr>
+
+							<tr ng-repeat='ordyItem in posUI.posOrderSearchUI.order.ordyItemList'>
+								<td>
+									<div>
+										<strong><span style='color:red;' ng-show='ordyItem.qty > 1'>{{ordyItem.qty}} x </span>{{posUI.shopLanguageTable[posUI.util.message.getProductNameFullCode(
+										posUI.util.menuItem.findMenuItem(posUI.posMenuUI.menuItemMap, ordyItem.menuItemId).product
+										)]}}</strong>
+									</div>
+									<div ng-repeat='extraOption in ordyItem.extraOptions.removeOptions track by $index'>
+										<span class="glyphicon glyphicon-minus" style='color:red;'></span>
+										{{posUI.shopLanguageTable[posUI.util.message.getExtraOptionItemNameCode(extraOption.option)]}}
+									</div>
+									<div ng-repeat='extraOption in ordyItem.extraOptions.addOptions track by $index'>
+										<span class="glyphicon glyphicon-plus"></span>
+										{{posUI.shopLanguageTable[posUI.util.message.getExtraOptionItemNameCode(extraOption.option)]}}
+									</div>
+									<div style='color:red;'>{{ordyItem.note}}</div>
+								</td>
+								<td class='text-right'>{{ordyItem.amount / 100 | currency}}</td>
+							</tr>
+					 		<tr ng-show='posUI.posOrderSearchUI.order.deliveryCharge && posUI.posOrderSearchUI.order.deliveryCharge > 0'>
+								<td class='text-right'><div>Delivery charge</div></td>
+								<td class='text-right'>{{posUI.posOrderSearchUI.order.deliveryCharge / 100 | currency}}</td>
+							</tr>
+						</tbody>
+						<tfoot>
+							<tr ng-show='posUI.posOrderSearchUI.order.cashback > 0'><td class='text-right'>Cashback <span ng-show='posUI.posOrderSearchUI.order.menuDiscountCoupon'>({{posUI.posOrderSearchUI.order.menuDiscountCoupon.couponCode}})</span></td><td class='text-right'><strong>({{(posUI.posOrderSearchUI.order.cashback / 100) | currency}})</strong></td></tr>
+							<tr ng-show='posUI.posOrderSearchUI.order.discountPercent && !posUI.posOrderSearchUI.order.fixedAmount'><td class='text-right'>{{posUI.posOrderSearchUI.order.discountPercent}}% Discount</td><td class='text-right'><strong>({{(posUI.cartUI.getDiscountAmount(posUI, posUI.posOrderSearchUI.order) / 100) | currency}})</strong></td></tr>
+							<tr ng-show='posUI.posOrderSearchUI.order.fixedAmount'><td class='text-right'>Adjustment</td><td class='text-right'><strong>{{(posUI.cartUI.getAdjustmentAmount(posUI, posUI.posOrderSearchUI.order) / 100) | currency}}</strong></td></tr>
+							<tr>
+								<td class='text-right'>
+									<span ng-show='posUI.posOrderSearchUI.order.fixedAmount' style='color:red;font-weight:bold;'>Fixed Total</span>
+									<span ng-show='!posUI.posOrderSearchUI.order.fixedAmount'>Total</span>
+								</td>
+								<td class='text-right'><strong>{{posUI.cartUI.getFinalTotalAmount(posUI, posUI.posOrderSearchUI.order) / 100 | currency}}</strong></td>
+							</tr>
+						</tfoot>
+
+
+					</table>
+					<div class="row" style='margin:10px 0px;'>
+						<div ng-repeat='payment in posUI.posOrderSearchUI.order.paymentList'>
+							<span style='color:red;'>Payment Received:</span> <strong>{{payment.amount / 100 | currency}}</strong> <small>({{payment.paymentType}})</small>
+						</div>
+					</div>
+					<div class="row" style='margin:10px 0px;'>
+						<div class="col-xs-12 bg-info" style='padding:10px;'>
+							<div>Customer: <span style='font-weight:bold;'>{{posUI.posOrderSearchUI.order.customerName}}</span>
+							{{posUI.posOrderSearchUI.order.deliveryAddress}}</div>
+               				<div>Ph:
+               					<span>{{posUI.posOrderSearchUI.order.customerMobileNumber}} </span>
+               					<span ng-show='!posUI.posOrderSearchUI.order.customerMobileNumber' ng-repeat='phone in posUI.posOrderSearchUI.order.customer.contact.phoneList'>{{phone.phoneNumber}} </span>
+               				</div>
+               				<div><span style="color:red;">{{posUI.shopLanguageTable[posUI.util.message.getMenuNameCode({menuId:posUI.posOrderSearchUI.order.menuId})]}}:</span> {{posUI.posOrderSearchUI.order.deliveryTime | date:"dd/MM/yyyy h:mm a"}}</div>
+						</div>
+					</div>
+					<div class='row' style='margin-bottom:10px;'>
+						<div class="col-xs-12"><p style='color:red;'>{{posUI.posOrderSearchUI.order.note}}</p></div>
+					</div>
+					</div>
+
+				</tab>
+				<tab heading="Customer">
+
+<%--
+					<div style='margin:20px 0px 0px 0px;'>
+						<button class="btn btn-primary" ng-click='posUI.posOrderSearchUI.xxx(posUI);'>Search Customer</button>
+					</div>
+					<div style='margin:30px 0px;' ng-show='!posUI.posOrderSearchUI.order.customer'>
+
+						<div class="row" style='margin:10px 0px;'>
+							<div class="col-xs-12 bg-info" style='padding:10px;'>
+								<div><span style='font-weight:bold;'>{{posUI.posOrderSearchUI.order.customerName}}</span>
+								{{posUI.posOrderSearchUI.order.deliveryAddress}}</div>
+	               				<div>Ph: <span>{{posUI.posOrderSearchUI.order.customerMobileNumber}} </span></div>
+							</div>
+						</div>
+
+					</div>
+--%>
+
+					<div style='margin-top:10px;' ng-show='posUI.posOrderSearchUI.order.customer'>
+					    <div class="form-group">
+					        <label class="control-label">Name</label>
+					        <div>{{posUI.posOrderSearchUI.order.customer.contact.name}}</div>
+					    </div>
+					    <div class="form-group">
+							<div class='row'>
+								<div class="col-xs-12"><label class="control-label">Address</label></div>
+							</div>
+							<table class="table table-striped">
+								<tbody>
+									<tr ng-repeat='address in posUI.posOrderSearchUI.order.customer.contact.addressList'>
+										<td><span>{{address.address}}</span></td>
+									</tr>
+								</tbody>
+							</table>
+					    </div>
+					    <div class="form-group">
+							<div class='row'>
+								<div class="col-xs-12"><label class="control-label">Phone</label></div>
+							</div>
+							<table class="table table-striped">
+								<tbody>
+									<tr ng-repeat='phone in posUI.posOrderSearchUI.order.customer.contact.phoneList'>
+										<td>{{phone.phoneType}}</td>
+										<td><span>{{phone.phoneNumber}}</span></td>
+									</tr>
+								</tbody>
+							</table>
+					    </div>
+					    <div class="form-group">
+					        <label class="control-label">Email</label>
+					        <div>{{posUI.posOrderSearchUI.order.customer.contact.email}}</div>
+					    </div>
+					    <div class="form-group">
+					        <label class="control-label">Customer Number: {{posUI.posOrderSearchUI.order.customer.customerNumber}}</label>
+					    </div>
+					</div>
+				</tab>
+			</tabset>
+		</div>
+	</div>
+	<div class='row' style='margin-top:10px;'>
+		<div class="col-xs-6">
+			<button class="btn btn-primary" ng-click="posUI.posOrderSearchUI.repeatOrder(posUI, posUI.posOrderSearchUI.order);">Repeat Order</button>
+			<button class="btn" ng-click="posUI.posOrderSearchUI.printOrder(posUI);">Print</button>
+		</div>
+		<div class="col-xs-6 text-right">
+		<!--
+			<button class="btn btn" ng-click="">Delete</button>
+			<button class="btn btn" ng-click="">Edit Order</button>
+			<button class="btn btn" ng-click="">Copy Order Items</button>			
+		-->
+			<button class="btn btn-primary" ng-show='posUI.cartUI.userIsPOSOperator && "NEWORDY" == posUI.posOrderSearchUI.order.ordyStatus' ng-click="posUI.posOrderSearchUI.confirmOrdy(posUI, posUI.posOrderSearchUI.order);">Confirm</button>
+			<button class="btn btn" ng-show='!posUI.posOrderSearchUI.singleOrderView' ng-click="posUI.posOrderSearchUI.backToSearch(posUI);">Back</button>
+		</div>
+	</div>
+</form>
+</div>
+
+
+
+</div>
+</div>

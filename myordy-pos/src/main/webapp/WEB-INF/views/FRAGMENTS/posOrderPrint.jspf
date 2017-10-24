@@ -1,0 +1,91 @@
+<div id='layout-print' ng-repeat='i in posUI.util.tools.loopCounter(posUI.posMenuUI.menu.menuOrdyConfig.printCopiesCount) track by $index'>
+
+    <div style="page-break-before: always;" ng-show='$index > 0'>
+        <p style="font-size:10pt;font-weight:bold;text-align:center;border-bottom:1px solid black;">DUPLICATE COPY</p>
+    </div>
+
+	<div>
+		<h1 style="margin: 3px 0px 3px 0px; font-size: 11pt; text-align: left;">{{posUI.shopLanguageTable[posUI.util.message.getShopNameCode(posUI.shop)]}}</h1>
+		<div style="font-size: 8pt; text-align: left;">
+			<div style='margin-top: 3px;'>
+				{{posUI.shopLanguageTable[posUI.util.message.getShopAddressCode(posUI.shop)]}}
+				Ph: {{posUI.shopLanguageTable[posUI.util.message.getShopPhoneCode(posUI.shop)]}}
+				{{posUI.shopLanguageTable[posUI.util.message.getShopBusinessNumberCode(posUI.shop)]}}
+				Total includes taxes.
+			</div>
+		</div>
+		<div style="text-align: center; margin: 5px 0px;">
+			<div style="border-top: 1px solid #b3c1df; border-bottom: 1px solid #b3c1df; padding: 3px; font-size: 10pt;">
+				<span style="color: red; font-size: 9pt;">Order Online</span>: <span>{{posUI.shopLanguageTable[posUI.util.message.getShopWebsiteCode(posUI.shop)]}}</span>
+			</div>
+		</div>
+	</div>
+
+	<div>
+		<div class="row" ng-show='posUI.posOrderSearchUI.order && posUI.posOrderSearchUI.order.customer'>
+			<div class="col-xs-12">
+				<div style="font-size:8pt;margin:5px 0px;">
+					Cust: {{posUI.posOrderSearchUI.order.customer.customerNumber}}<span style="margin:0px 5px;">&nbsp;</span>
+					Order: {{posUI.posOrderSearchUI.order.ordyNumber}}<span style="margin:0px 5px;">&nbsp;</span>
+					{{posUI.posOrderSearchUI.order.orderTime | date:"dd/MM/yyyy h:mm a"}}
+				</div>
+			</div>
+		</div>
+		<div class="row" style='margin:10px 0px;'>
+			<div ng-repeat='payment in posUI.posOrderSearchUI.order.paymentList'>
+				<span style='color:red;'>Payment Received:</span> <strong>{{payment.amount / 100 | currency}}</strong> <small>({{payment.paymentType}})</small>
+			</div>
+		</div>
+
+		<div class="row" ng-show='posUI.util.menu.isDeliveryMenu(posUI.posMenuUI.menu)'>
+               <div class="col-xs-12">
+               	<div>
+               		<table style="border-collapse: collapse; border-spacing: 0px; width: 100%;">
+               			<tbody>
+               			<tr>
+               				<td style="width:40%;font-size:9pt;vertical-align:top;padding:4px;">
+               					<div style='font-weight:bold;display: block;'>{{posUI.posOrderSearchUI.order.customerName}}</div>
+               					<div style='border-top:1px solid black;display: block;padding-top:3px;'>{{posUI.posOrderSearchUI.order.deliveryAddress}}</div>
+               				</td>
+               				<td style="width:60%;font-size:9pt;vertical-align:top;padding:4px;">
+               					<div style="font-size:8pt;"><span style="color:red;">{{posUI.shopLanguageTable[posUI.util.message.getMenuNameCode({menuId:posUI.posOrderSearchUI.order.menuId})]}}:</span> {{posUI.posOrderSearchUI.order.deliveryTime | date:"dd/MM/yyyy h:mm a"}}</div>
+                				<div style="font-size:8pt;">Ph:
+                					<span>{{posUI.cartUI.customerPhoneNumbers}} </span>
+                				</div>
+               				</td>
+               			</tr>
+               			</tbody>
+               		</table>
+               	</div>
+               </div>
+		</div>
+		<div class="row" ng-show='!posUI.util.menu.isDeliveryMenu(posUI.posMenuUI.menu)'>
+               <div class="col-xs-12">
+               	<div>
+               		<table style="border-collapse: collapse; border-spacing: 0px; width: 100%;"><tbody>
+               			<tr>
+               				<td style="width:40%;font-size:9pt;vertical-align:top;padding:4px;">
+               					<div style='font-weight:bold;'>{{posUI.posOrderSearchUI.order.customerName}}</div>
+               					<div style="font-size:8pt;">Ph:
+                					<span>{{posUI.cartUI.customerPhoneNumbers}} </span>
+               					</div>
+               				</td>
+							<td style="width:60%;font-size:9pt;vertical-align:top;padding:4px;"><div style="font-size:8pt;"><span style="color:green;">Pick-Up:</span> {{posUI.posOrderSearchUI.order.deliveryTime | date:"dd/MM/yyyy h:mm a"}}</div></td>
+               			</tr>
+               		</tbody></table>
+               	</div>
+               </div>
+		</div>
+		<div class='row'>
+			<div class="col-xs-12"><p style='color:red;'>{{posUI.posOrderSearchUI.order.note}}</p></div>
+		</div>
+	</div>
+
+	<%@ include file="/WEB-INF/views/FRAGMENTS/posOrder.jspf"%>
+
+	<div style="border-top: 1px solid #D7DFEE; padding-top: 5px; margin-top: 5px;">
+		<div style="text-align: center; font-size: 11pt;">
+			{{posUI.shopLanguageTable[posUI.util.message.getMenuNameCode(posUI.posMenuUI.menu)]}}
+		</div>
+	</div>
+</div>

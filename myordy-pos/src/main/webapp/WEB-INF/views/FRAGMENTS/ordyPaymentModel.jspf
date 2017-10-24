@@ -1,0 +1,26 @@
+<div ng-show='true'>
+<form name='payOnlineEwayForm' style='margin-top:10px;'>
+
+<div class="modal-header">
+	<h3 class="modal-title">Order Submitted Successfully</h3>
+</div>
+
+<div class="modal-body">
+
+<div>
+	<p>Please stay updated with order status from <strong>My Order Log</strong> tab.</p>
+</div>
+
+</div>
+
+<div class="modal-footer">
+	<button class="btn btn-warning" ng-click="cancel()">Close</button>
+<%--
+	<button class="btn btn-primary" ng-click="posUI.cartUI.payOnlineEway(ordyId, posUI)">Pay Online</button>
+--%>
+</div>
+
+
+</form>
+</div>
+

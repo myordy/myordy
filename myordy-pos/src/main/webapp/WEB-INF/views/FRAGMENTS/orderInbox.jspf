@@ -1,0 +1,20 @@
+	<div class='row' style='margin-top:10px;'>
+		<div class="col-xs-12">
+			<table class="table table-striped">
+				<thead><tr><th style='color:#666666;'><small>Order Time</small></th><th style='color:#666666;'><small>Menu</small></th><th style='color:#666666;'><small>Customer</small></th><th class='text-right' style='width:80px;color:#666666;'><small>Amount</small></th></tr></thead>
+				<tbody>
+					<tr ng-repeat="order in posUI.ordyInboxUI.inboxOrders.items" ng-click='posUI.ordyInboxUI.openInboxOrder(posUI, order)'
+						 ng-class="{'danger':(order.fixedAmount || order.discountPercent)}">
+						<td class=''>{{order.orderTime | date:"dd/MM/yyyy h:mm a"}}</td>
+						<td class=''>{{posUI.shopLanguageTable[posUI.util.message.getMenuNameCode({menuId:order.menuId})]}}</td>
+						<td class=''>{{order.customerName}}</td>
+						<td class='text-right' style='text-decoration: blink;'>{{posUI.cartUI.getFinalTotalAmount(posUI, order) / 100 | currency}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+<audio id="ordyInboxUI_NEW_ORDY_ALERT">
+	<source src="/myordy-resources/resources/sound/alert.mp3?v=<c:out value='${config.version}' />"></source>
+</audio>

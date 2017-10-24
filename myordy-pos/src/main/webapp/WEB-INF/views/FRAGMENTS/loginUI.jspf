@@ -1,0 +1,101 @@
+<div ng-show='posUI.loginUI.container.showLogout'>
+<div class="modal-header">
+	<h3 class="modal-title">Logout</h3>
+</div>
+<div class="modal-body">
+
+	<p>Are you sure you wish to logout?</p>
+
+	<div class='row' style='margin-top:20px;'>
+		<div class="col-xs-6">
+			<button type="button" class="btn btn-warning" ng-click="posUI.loginUI.modalInstance.close();">Cancel</button>
+		</div>
+		<div class="col-xs-6 text-right">
+			<button type='button' class="btn btn-primary" style='margin-right:10px;' ng-click="posUI.loginUI.logout(posUI);">Logout</button>
+		</div>
+	</div>
+
+</div>
+</div>
+
+
+<div ng-show='posUI.loginUI.container.showLogin'>
+<div class="modal-header">
+	<h3 class="modal-title">Login</h3>
+</div>
+<div class="modal-body">
+
+
+<div ng-show='true'>
+
+<tabset>
+	<tab heading="Email">
+		<form name='loginFormEmail' ng-submit='posUI.loginUI.submitLoginFormEmail(posUI);'>
+		    <div class="form-group" ng-class="{'has-error':loginForm.loginFormEmail.$invalid}" style='margin-top:20px;'>
+		        <label for="loginFormEmail" class="control-label">Email</label>
+		        <input id='loginFormEmail' type="email" name='loginFormEmail' class="form-control" ng-model="posUI.loginUI.loginFormEmail.email" required />
+		    </div>
+		    <div class="form-group" ng-class="{'has-error':loginForm.password.$invalid}">
+		        <label for="loginFormPassword" class="control-label">Password</label>
+		        <input id='loginFormPassword' type="password" name='loginFormPassword' class="form-control" ng-model="posUI.loginUI.loginFormEmail.password" required />
+		    </div>
+			<div class='row'>
+				<div class="col-xs-6">
+					<button type="button" class="btn btn-warning" ng-click="posUI.loginUI.modalInstance.close();">Cancel</button>
+					<%--<button type="button" class="btn" ng-click="" style='margin-right:10px;'>Forgot Password</button>--%>
+				</div>
+				<div class="col-xs-6 text-right">
+					<button ng-disabled='loginFormEmail.$invalid' type='submit' class="btn btn-primary" style='margin-right:10px;'>Login</button>
+				</div>
+			</div>
+			<div class="row" style='margin:15px 0px;'>
+				<div class="col-xs-12">
+					<div class="alert alert-danger" role="alert" ng-repeat='errorCode in posUI.loginUI.errorMessageList'>
+					  <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+					  <span class="sr-only">Error:</span> {{errorCode}}
+					</div>
+				</div>
+			</div>
+		</form>
+
+	</tab>
+<%--
+	<tab heading="Mobile">
+	    <div class="form-group" ng-class="{'has-error':loginForm.loginFormMobile.$invalid}" style='margin-top:20px;'>
+	        <label for="loginFormMobile" class="control-label">Mobile Number</label>
+			<input id='loginFormMobile' name='loginFormMobile' class='form-control' type='text' ng-model='posUI.loginUI.loginForm.mobile' ng-maxlength='100' />
+	    </div>
+	</tab>
+	<tab heading="Facebook">
+	    TODO
+	</tab>
+	<tab heading="New Account">
+	    Name, Email, Mobile Number, Password, Confirm Password, Email/Mobile Verification Code
+	</tab>
+--%>
+</tabset>
+
+
+<%--
+<form name='loginForm'>
+    <div class="form-group" ng-class="{'has-error':loginForm.password.$invalid}">
+        <label for="loginFormPassword" class="control-label">Password</label>
+        <input id='loginFormPassword' type="password" name='loginFormPassword' class="form-control" ng-model="posUI.loginUI.loginForm.password" required />
+    </div>
+	<div class='row'>
+		<div class="col-xs-6">
+			<button class="btn btn-warning" ng-click="posUI.loginUI.modalInstance.close();">Cancel</button>
+			<button type='submit' class="btn" ng-click="" style='margin-right:10px;'>Forgot Password</button>
+		</div>
+		<div class="col-xs-6 text-right">
+			<button type='submit' class="btn btn-primary" ng-click="posUI.loginUI.submitLoginForm(posUI)" style='margin-right:10px;'>Login</button>
+		</div>
+	</div>
+</form>
+--%>
+
+</div>
+
+
+</div>
+</div>

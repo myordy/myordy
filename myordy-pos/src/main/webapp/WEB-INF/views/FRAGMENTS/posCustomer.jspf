@@ -1,0 +1,228 @@
+<div>
+	<div class="col-xs-12" style='border-bottom:1px solid #cccccc;padding:10px 5px;'>
+	
+
+<div ng-show='posUI.posCustomerSearchUI.container.showSearch'>
+<form name='posCustomerSearchForm'>
+    <div class="form-group">
+        <label for="customerPhone" class="control-label">Phone</label>
+        <input id='customerPhone' class='form-control' type='text' ng-model='posUI.posCustomerSearchUI.searchRequest.phone' />
+    </div>
+    <div class="form-group">
+        <label for="customerName" class="control-label">Name</label>
+        <input id='customerName' name='customerName' class='form-control' type='text' ng-model='posUI.posCustomerSearchUI.searchRequest.name' />
+    </div>
+    <div class="form-group">
+        <label for="customerAddress" class="control-label">Address</label>
+        <input id='customerAddress' class='form-control' type='text' ng-model='posUI.posCustomerSearchUI.searchRequest.address' />
+    </div>
+    <div class="form-group">
+        <label for="customerNumber" class="control-label">Customer Number</label>
+        <input id='customerNumber' class='form-control' type='text' ng-model='posUI.posCustomerSearchUI.searchRequest.customerNumber' />
+    </div>
+
+	<div class='row'>
+		<div class="col-xs-6">
+			<button type='button' class="btn" ng-click="posUI.posCustomerSearchUI.onNewCustomerClick(posUI);" style='margin-right:10px;'><i class="glyphicon glyphicon-plus"></i> New</button>
+		</div>
+		<div class="col-xs-6 text-right">
+			<button type='submit' class="btn btn-primary" ng-click="posUI.posCustomerSearchUI.search(posUI)" style='margin-right:10px;'>Search</button>
+		</div>
+	</div>
+
+	<div class='row' style='margin-top:10px;'>
+		<div class="col-xs-12">
+			<table class="table table-striped">
+				<tbody>
+					<tr ng-repeat='customer in posUI.posCustomerSearchUI.searchResult.items' ng-click='posUI.posCustomerSearchUI.showCustomerDetails(posUI, customer, $index);'
+						ng-class="{danger: customer.status=='DELETED'}">
+						<td>
+							<div style='font-weight:bold;'>
+								<del ng-show="customer.status=='DELETED'" style=''>{{customer.contact.name}}</del>
+								<span ng-show="customer.status!='DELETED'">{{customer.contact.name}}</span>
+							</div>
+							<div ng-repeat='address in customer.contact.addressList'>
+								<del ng-show="address.status=='DELETED'" style=''>{{address.address}}</del>
+								<span ng-show="address.status!='DELETED'">{{address.address}}</span>
+							</div>
+						</td>
+						<td class='text-right'>
+							<div ng-repeat='phone in customer.contact.phoneList'>
+								<del ng-show="phone.status=='DELETED'" style=''>{{phone.phoneNumber}}</del>
+								<span ng-show="phone.status!='DELETED'">{{phone.phoneNumber}}</span>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<div class='text-center' ng-show='posUI.posCustomerSearchUI.searchResult.items.length > 0'>
+				<pagination ng-change='posUI.posCustomerSearchUI.search(posUI)'
+					total-items="posUI.posCustomerSearchUI.searchResult.totalItems" ng-model="posUI.posCustomerSearchUI.searchRequest.currentPageNumber" 
+					boundary-links="true" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" max-size='5'></pagination>
+			</div>
+		</div>
+	</div>
+</form>
+</div>
+
+
+<div ng-show='posUI.posCustomerSearchUI.container.showDetail'>
+<div class='row'>
+	<div class="col-xs-12">
+		<form name='posCustomerDetailForm' style='margin-top:10px;'>
+			<div class='row' ng-show='posUI.posCustomerSearchUI.customer.customerId'>
+				<div class="col-xs-12 text-right">
+					<button class="btn btn" style='margin-right:10px;' ng-click='posUI.posCustomerSearchUI.openLastOrder(posUI)'>Last Order</button>
+					<button class="btn btn" ng-click='posUI.posCustomerSearchUI.openOrderLog(posUI)'>Order Log</button>
+				</div>
+			</div>
+		    <div class="form-group" ng-class="{'has-error':posCustomerDetailForm.customerNameDetail.$invalid}">
+		        <label for="customerNameDetail" class="control-label">Name</label>
+		        <input id='customerNameDetail' name='customerNameDetail' class='form-control' type='text' ng-model='posUI.posCustomerSearchUI.customer.contact.name'
+		        		ng-maxlength='255' />
+		    </div>
+		    <div class="form-group">
+				<div class='row'>
+					<div class="col-xs-8"><label class="control-label">Address</label></div>
+					<div class="col-xs-4 text-right">
+						<a ng-click="posUI.posCustomerSearchUI.showCreateAddress(posUI)"><h4><i class="glyphicon glyphicon-plus"></i></h4></a>
+					</div>
+				</div>
+				<table class="table table-striped">
+					<tbody>
+						<tr ng-repeat='address in posUI.posCustomerSearchUI.customer.contact.addressList' ng-click='posUI.posCustomerSearchUI.showUpdateAddress(posUI, address, $index)'
+							ng-class="{danger: address.status=='DELETED'}">
+							<td>
+								<div ng-show='address.address.formatted_address'>
+									<del ng-show="address.status=='DELETED'">{{address.address.formatted_address}}</del>
+									<span ng-show="address.status!='DELETED'">{{address.address.formatted_address}}</span>
+								</div>
+								<div ng-show='!address.address.formatted_address'>
+									<del ng-show="address.status=='DELETED'">{{address.address}}</del>
+									<span ng-show="address.status!='DELETED'">{{address.address}}</span>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+		    </div>
+		    <div class="form-group">
+				<div class='row'>
+					<div class="col-xs-8"><label class="control-label">Phone</label></div>
+					<div class="col-xs-4 text-right">
+						<a ng-click="posUI.posCustomerSearchUI.showCreatePhone()"><h4><i class="glyphicon glyphicon-plus"></i></h4></a>
+					</div>
+				</div>
+				<table class="table table-striped">
+					<tbody>
+						<tr ng-repeat='phone in posUI.posCustomerSearchUI.customer.contact.phoneList' ng-click='posUI.posCustomerSearchUI.showUpdatePhone(phone, $index)'
+							ng-class="{danger: phone.status=='DELETED'}">
+							<td>{{phone.phoneType}}</td>
+							<td>
+								<del ng-show="phone.status=='DELETED'">{{phone.phoneNumber}}</del>
+								<span ng-show="phone.status!='DELETED'">{{phone.phoneNumber}}</span>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+		    </div>
+		    <div class="form-group" ng-class="{'has-error':posCustomerDetailForm.customerEmail.$invalid}">
+		        <label for="customerEmail" class="control-label">Email</label>
+		        <input id='customerEmail' name='customerEmail' class='form-control' type='email' ng-model='posUI.posCustomerSearchUI.customer.contact.email' />
+		    </div>
+		    <div class="form-group">
+		        <label for="customerNote" class="control-label">Note</label>
+		        <textarea id='customerNote' class="form-control" rows="2" ng-model='posUI.posCustomerSearchUI.customer.note' style='color:red;'></textarea>
+		    </div>
+		    <div class="form-group">
+		        <label class="control-label">Customer Number: {{posUI.posCustomerSearchUI.customer.customerNumber}}</label>
+		    </div>
+			<div class='row'>
+				<div class="col-xs-4 text-left">
+					<button class="btn btn-danger" ng-click="posUI.posCustomerSearchUI.deleteCustomer(posUI)"
+							ng-show="posUI.posCustomerSearchUI.customer.status!='DELETED' && posUI.posCustomerSearchUI.customer.customerId">Delete</button>
+				</div>
+				<div class="col-xs-8 text-right">
+					<button ng-disabled='posCustomerDetailForm.$invalid' class="btn btn-primary" ng-click="posUI.posCustomerSearchUI.customerSave(posUI)" style='margin-right:10px;'>Save Customer</button>
+					<button class="btn btn" ng-click="posUI.posCustomerSearchUI.backToSearch(posUI);">Back</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+</div>
+
+
+<div ng-show='posUI.posCustomerSearchUI.container.addressDetail'>
+<form name='posAddressDetailForm' style='margin-top:10px;'>
+<div class='row' style='margin-top:10px;'>
+	<div class="col-xs-8">
+		<h3 class="modal-title">{{posUI.posCustomerSearchUI.customer.contact.name}}</h3>
+	</div>
+</div>
+<div class="form-group" ng-class="{'has-error':posAddressDetailForm.address.$invalid}">
+	<label for="address" class="control-label">Address</label>
+	<input id='address' name='address' class='form-control'
+			ng-model="posUI.posCustomerSearchUI.address.address" required ng-maxlength='255'
+			ng-change='posUI.posCustomerSearchUI.address.postcode = null;' />
+</div>
+<div class="form-group">
+	<label for="suburb" class="control-label">Suburb</label>
+	<select id='suburb' name='suburb' ng-model='posUI.posCustomerSearchUI.address.suburb' class='form-control'
+			ng-options="suburb as suburb.name for suburb in posUI.posCustomerSearchUI.suburbOptions track by suburb.suburbId"
+			ng-change='posUI.posCustomerSearchUI.address.suburbId = posUI.posCustomerSearchUI.address.suburb.suburbId'></select>
+</div>
+<div class='row'>
+	<div class="col-xs-12 text-right"><a ng-click='posUI.posMenuUI.showBusinessServicedSuburbsConfig(posUI)'>Serviced Suburbs</a></div>
+</div>
+<div class='row' ng-show='posUI.posCustomerSearchUI.address.postcode != null'>
+	<div class="col-xs-12">
+		<div id="customerAddressMap" style='height:300px;'></div>
+	</div>
+</div>
+
+<div class='row' style='margin-top:15px;'>
+	<div class="col-xs-4 text-left">
+		<button class="btn btn-danger" ng-click="posUI.posCustomerSearchUI.deleteAddress()" ng-show="posUI.posCustomerSearchUI.addressIndex > -1 && posUI.posCustomerSearchUI.address.status!='DELETED'">Delete</button>
+	</div>
+	<div class="col-xs-8 text-right">
+		<button ng-disabled='posAddressDetailForm.$invalid' class="btn btn-primary" ng-click="posUI.posCustomerSearchUI.updateAddress()" style='margin-right:10px;'>Done</button>
+		<button class="btn btn-warning" ng-click="posUI.posCustomerSearchUI.backToCustomerDetails();">Cancel</button>
+	</div>
+</div>
+</form>
+</div>
+
+
+<div ng-show='posUI.posCustomerSearchUI.container.phoneDetail'>
+<form name='posPhoneDetailForm' style='margin-top:10px;'>
+	<div class='row' style='margin-top:10px;'>
+		<div class="col-xs-8">
+			<h3 class="modal-title">{{posUI.posCustomerSearchUI.customer.contact.name}}</h3>
+		</div>
+	</div>
+    <div class="form-group" ng-class="{'has-error':posPhoneDetailForm.phoneNumber.$invalid}">
+        <label for="phoneNumber" class="control-label">Phone No</label>
+		<input id='phoneNumber' name='phoneNumber' class='form-control' type='text' ng-model='posUI.posCustomerSearchUI.phone.phoneNumber' required ng-maxlength='100' />
+    </div>
+    <div class="form-group" ng-class="{'has-error':posPhoneDetailForm.phoneNumberType.$invalid}">
+        <label for="phoneNumberType" class="control-label">Type</label>
+    	<select id='phoneNumberType' name='phoneNumberType' ng-model='posUI.posCustomerSearchUI.phone.phoneType' class='form-control' ng-options="phoneType for phoneType in posUI.referenceData.theUserPhoneTypeList" required></select>
+    </div>
+	<div class='row'>
+		<div class="col-xs-4 text-left">
+			<button class="btn btn-danger" ng-click="posUI.posCustomerSearchUI.deletePhone()" ng-show="posUI.posCustomerSearchUI.phoneIndex > -1 && posUI.posCustomerSearchUI.phone.status!='DELETED'">Delete</button>
+		</div>
+		<div class="col-xs-8 text-right">
+			<button ng-disabled='posPhoneDetailForm.$invalid' class="btn btn-primary" ng-click="posUI.posCustomerSearchUI.updatePhone()" style='margin-right:10px;'>Done</button>
+			<button class="btn btn-warning" ng-click="posUI.posCustomerSearchUI.backToCustomerDetails();">Cancel</button>
+		</div>
+	</div>
+</form>
+</div>
+
+
+	</div>
+</div>
+
+

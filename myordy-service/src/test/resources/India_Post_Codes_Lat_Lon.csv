@@ -1,0 +1,5 @@
+postcode,suburb,state,dc,type,lat,lon
+200,AUSTRALIAN NATIONAL UNIVERSITY,ACT,AUSTRALIAN NATIONAL UNI LPO,Post Office Boxes                            ,-35.277272,149.117136
+221,BARTON,ACT,NULL,LVR                                          ,-35.201372,149.095065
+800,DARWIN,NT,DARWIN DELIVERY CENTRE,Delivery Area                                ,-12.801028,130.955789
+801,DARWIN,NT,DARWIN DELIVERY CENTRE,Post Office Boxes                            ,-12.801028,130.955789

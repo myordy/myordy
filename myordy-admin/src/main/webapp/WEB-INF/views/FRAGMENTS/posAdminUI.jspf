@@ -1,0 +1,19 @@
+<div id='posAdminUI' ng-show='posAdminUI.reportingUI.userHasAccess'>
+	<div>
+		<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 voffset2" style="padding:0px 4px 0px 0px;">
+	
+			<span class="dropdown" dropdown>
+			  <button type="button" class="btn btn-primary dropdown-toggle" dropdown-toggle>Reports <span class="caret"></span></button>
+			  <ul class="dropdown-menu">
+			    <li ng-click='posAdminUI.reportingUI.onSalesSummaryReportSelect(posAdminUI)'
+			    	style='margin:10px;'>
+			    	<a>Sales Summary</a>
+			    </li>
+			  </ul>
+			</span>
+		</div>
+		<div id='reportingUI' ng-show='posAdminUI.containers.showReportingUI' class="col-xs-12 col-sm-12 col-md-12 col-lg-12voffset2" style="padding:0px 0px 0px 4px;">
+			<%@ include file="/WEB-INF/views/FRAGMENTS/reportingUI.jspf" %>
+		</div>
+	</div>
+</div>

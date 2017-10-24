@@ -1,0 +1,49 @@
+@media print {
+	#layout-default {
+		display:none;
+	}
+	#layout-print {
+		display:block;
+	}
+	.media-print-only {
+		display:block;
+	}
+	.media-screen-only {
+		display:none;
+	}
+	.ordy-items tbody tr td {
+		font-size: 9pt;
+	}
+}
+
+@media screen {
+	#layout-default {
+		display:block;
+	}
+	#layout-print {
+		display:none;
+	}
+	.media-screen-only {
+		display:block;
+	}
+	.media-print-only {
+		display:none;
+	}
+	.glow-text {
+		animation: glowTextBlinker 3s infinite;
+		animation-timing-function : cubic-bezier(1, .1, .1, .1);
+	}
+	@keyframes glowTextBlinker {
+	    from {color: red;}
+	    to {color: #ffffff;}
+	}
+	.glow-alert-danger-background {
+		animation: glowAlertDangerBackgroundBlinker 3s infinite;
+		animation-timing-function : cubic-bezier(1, .1, .1, .1);
+	}
+	@keyframes glowAlertDangerBackgroundBlinker {
+	    from {background-color: #f2dede;}
+	    to {background-color: #ffffff;}
+	}
+
+}

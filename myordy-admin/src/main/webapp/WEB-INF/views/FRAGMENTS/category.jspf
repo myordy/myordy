@@ -1,0 +1,54 @@
+<form name='categoryForm'>
+<div id='categoryContainer'>
+
+<div ng-show='request.shopUI.categoryUI.container.showList'>
+<div class="modal-header">
+	<h3 class="modal-title" ng-click='goBackCategory()'>
+		<i class="glyphicon glyphicon-chevron-left"></i> {{request.shopUI.shopLanguageTable[request.shopUI.util.message.getShopNameCode(request.shopUI.shop)]}}
+		<span style='font-weight:normal;color:#cccccc;'>Manage Category</span>
+	</h3>
+</div>
+<div class="modal-body">
+	<table class="table table-striped">
+		<thead><tr><th style='color:#666666;width:60px;'><small>ID</small></th><th style='color:#666666;'><small>Name</small></th><th style='color:#666666;width:70px;'><small>Status</small></th></tr></thead>
+		<tbody><tr ng-repeat='category in request.shopUI.shop.categoryList' ng-click='request.shopUI.categoryUI.showDetail(request.shopUI, category, request.shopUI.categoryUI.backToManageCategory)'>
+			<td>{{category.categoryId}}</td><td><div><strong>{{request.shopUI.shopLanguageTable[request.shopUI.util.message.getCategoryNameCode(category)]}}</strong></div></td><td>{{category.status}}</td>
+		</tr></tbody>
+	</table>
+</div>
+<div class="modal-footer">
+	<button class="btn btn-primary" ng-click="goBackCategory()">OK</button>
+	<button class="btn btn-warning" ng-click="goBackCategory()">Cancel</button>
+</div>
+</div>
+
+<div ng-show='request.shopUI.categoryUI.container.showDetail'>
+<div class="modal-header">
+	<h3 class="modal-title" ng-click='goBackCategory()'>
+		<i class="glyphicon glyphicon-chevron-left"></i> {{request.shopUI.shopLanguageTable[request.shopUI.util.message.getShopNameCode(request.shopUI.shop)]}}
+		<span style='font-weight:normal;color:#cccccc;' ng-show='!request.shopUI.categoryUI.category.categoryId'>New Category</span>
+	</h3>
+</div>
+<div class="modal-body">
+    <div class="form-group">
+        <label for="categoryName" class="control-label">Category Name</label>
+        <input id='categoryName' class='form-control' type='text' ng-model='request.shopUI.shopLanguageTable[request.shopUI.util.message.getCategoryNameCode(request.shopUI.categoryUI.category)]' />
+    </div>
+    <div class="form-group">
+        <label for="categoryDescription" class="control-label">Description</label>
+        <textarea id='categoryDescription' class='form-control' type='text' ng-model='request.shopUI.shopLanguageTable[request.shopUI.util.message.getCategoryDescriptionCode(request.shopUI.categoryUI.category)]'></textarea>
+    </div>
+    <div class="form-group">
+        <label for="categoryStatus" class="control-label">Status</label>
+        <select id='categoryStatus' ng-model='request.shopUI.categoryUI.category.status' class='form-control' style='font-weight:bold;' ng-options="status for status in request.shopUI.referenceData.entityStatusList"></select>
+    </div>
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-primary" ng-click='request.shopUI.categoryUI.createCategory(request.shopUI)' ng-show='!request.shopUI.categoryUI.category.categoryId'>Create Category</button>
+	<button type="button" class="btn btn-primary" ng-click='request.shopUI.categoryUI.updateCategory(request.shopUI, request.shopUI.categoryUI.category)' ng-show='request.shopUI.categoryUI.category.categoryId'>Save</button>
+	<button class="btn btn-warning" ng-click="goBackCategory()">Cancel</button>
+</div>
+</div>
+
+</div>
+</form>

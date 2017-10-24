@@ -1,0 +1,120 @@
+<form name='menuItemForm'>
+<div ng-show='request.shopUI.menuItemUI.container.showCreate'>
+
+<div class="modal-header">
+	<h3 class="modal-title">
+		<span ng-show='request.menu'>{{request.shopUI.shopLanguageTable[request.shopUI.util.message.getMenuNameCode(request.menu)]}}</span>
+		<span ng-show='request.parentMenuItem && request.parentMenuItem.category'>{{request.shopUI.shopLanguageTable[request.shopUI.util.message.getCategoryNameCode(request.parentMenuItem.category)]}}</span>
+		<span style='font-weight:normal;color:#cccccc;'>New Menu Item</span>
+	</h3>
+</div>
+<div class="modal-body">
+	<div class="row" ng-show='(!request.shopUI.menuItemUI.disableProduct) || (!request.shopUI.menuItemUI.disableCategory)'>
+		<div class="col-lg-12">
+			<label><input type="radio" ng-model="request.shopUI.menuItemUI.menuItemType" value="category" ng-disabled='request.shopUI.menuItemUI.disableCategory'> Category</label>
+			<label style='margin-left:20px;'><input type="radio" ng-model="request.shopUI.menuItemUI.menuItemType" value="product" ng-disabled='request.shopUI.menuItemUI.disableProduct'> Product</label>
+		</div>
+	</div>
+    <div class="form-group" ng-show='request.shopUI.menuItemUI.menuItemType == "product"'>
+        <select id='product' ng-model='request.shopUI.menuItemUI.menuItem.product' class='form-control' style='font-weight:bold;'
+        		ng-options="product as request.shopUI.shopLanguageTable[request.shopUI.util.message.getProductNameFullCode(product)] for product in request.shopUI.shop.productList track by product.productId"></select>
+		<h4>
+			<a ng-click='request.shopUI.productUI.showList(request.shopUI, request.shopUI.menuItemUI.backToCreateMenuItemForm)'><i class="glyphicon glyphicon-pencil pull-right" style='margin-left:20px;'></i></a>
+			<a ng-click='request.shopUI.productUI.showCreateForm(request.shopUI, request.shopUI.menuItemUI.backToCreateMenuItemForm)'><i class="glyphicon glyphicon-plus pull-right" style='margin-right:5px;'></i></a>
+		</h4>
+	</div>
+    <div class="form-group" ng-show='request.shopUI.menuItemUI.menuItemType == "product"'>
+        <label for="price" class="control-label">Price</label>
+        <input id='price' ng-model='request.shopUI.menuItemUI.menuItem.price' class='form-control' type='text' />
+	</div>
+    <div class="form-group" ng-show='request.shopUI.menuItemUI.menuItemType == "category"'>
+        <select id='category' ng-model='request.shopUI.menuItemUI.menuItem.category' class='form-control' style='font-weight:bold;'
+        		ng-options="category as request.shopUI.shopLanguageTable[request.shopUI.util.message.getCategoryNameCode(category)] for category in request.shopUI.shop.categoryList track by category.categoryId"></select>
+		<h4>
+			<a ng-click='request.shopUI.categoryUI.showList(request.shopUI, request.shopUI.menuItemUI.backToCreateMenuItemForm)'><i class="glyphicon glyphicon-pencil pull-right" style='margin-left:20px;'></i></a>
+			<a ng-click='request.shopUI.categoryUI.showCreateForm(request.shopUI, request.shopUI.menuItemUI.backToCreateMenuItemForm)'><i class="glyphicon glyphicon-plus pull-right" style='margin-right:5px;'></i></a>
+		</h4>
+	</div>
+    <div class="form-group">
+        <label for="previousMenuItemId" class="control-label">Place After</label>
+        <select id='previousMenuItemId' ng-model='request.shopUI.menuItemUI.menuItem.previousMenuItemId' class='form-control' style='font-weight:bold;'
+        	ng-options="siblingMenuItem.menuItemId as request.shopUI.util.message.getMenuItemName(request.shopUI, siblingMenuItem) for siblingMenuItem in request.shopUI.menuItemUI.siblingMenuItems"><option value=''></option></select>
+    </div>
+    <div class="form-group">
+        <label for="menuItemStatus" class="control-label">Status</label>
+        <select id='menuItemStatus' ng-model='request.shopUI.menuItemUI.menuItem.status' class='form-control' style='font-weight:bold;' ng-options="status for status in request.shopUI.referenceData.entityStatusList"></select>
+    </div>
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-primary" ng-click='request.shopUI.menuItemUI.createMenuItem(request.shopUI)' ng-show='!request.shopUI.menuItemUI.menuItem.menuItemId'>Create Menu Item</button>
+	<button class="btn btn-warning" ng-click="cancel()">Close</button>
+</div>
+</div>
+
+<div ng-show='request.shopUI.menuItemUI.container.showDetail'>
+<div class="modal-header">
+	<h3 class="modal-title">
+		<span ng-show='request.menu'>{{request.shopUI.shopLanguageTable[request.shopUI.util.message.getMenuNameCode(request.menu)]}}</span>
+		<span ng-show='request.parentMenuItem && request.parentMenuItem.category'>{{request.shopUI.shopLanguageTable[request.shopUI.util.message.getCategoryNameCode(request.parentMenuItem.category)]}}</span>
+	</h3>
+</div>
+<div class="modal-body">
+	<div ng-show='request.shopUI.menuItemUI.menuItem.category'>
+	    <h4><a ng-click='request.shopUI.categoryUI.showDetail(request.shopUI, request.shopUI.menuItemUI.menuItem.category, request.shopUI.menuItemUI.backToMenuItemDetails)'>{{request.shopUI.shopLanguageTable[request.shopUI.util.message.getCategoryNameCode(request.shopUI.menuItemUI.menuItem.category)]}}</a></h4>
+		<p>{{request.shopUI.shopLanguageTable[request.shopUI.util.message.getCategoryDescriptionCode(request.shopUI.menuItemUI.menuItem.category)]}}</p>
+	</div>
+	<div ng-show='request.shopUI.menuItemUI.menuItem.product'>
+    	<h4><a ng-click='request.shopUI.productUI.showDetail(request.shopUI, request.shopUI.menuItemUI.menuItem.product, request.shopUI.menuItemUI.backToMenuItemDetails)'>{{request.shopUI.shopLanguageTable[request.shopUI.util.message.getProductNameFullCode(request.shopUI.menuItemUI.menuItem.product)]}}</a></h4>
+		<p>{{request.shopUI.shopLanguageTable[request.shopUI.util.message.getProductDescriptionCode(request.shopUI.menuItemUI.menuItem.product)]}}</p>
+    </div>
+
+    <div class="form-group" ng-show='request.shopUI.menuItemUI.menuItem.product'>
+        <label for="price" class="control-label">Price</label>
+        <input id='price' ng-model='request.shopUI.menuItemUI.priceFormatted' class='form-control' type='text' />
+	</div>
+
+    <div class="form-group">
+        <label for="previousMenuItemId" class="control-label">Place After</label>
+        <select id='previousMenuItemId' ng-model='request.shopUI.menuItemUI.menuItem.previousMenuItemId' class='form-control' style='font-weight:bold;'
+        	ng-options="siblingMenuItem.menuItemId as request.shopUI.util.message.getMenuItemName(request.shopUI, siblingMenuItem) for siblingMenuItem in request.shopUI.menuItemUI.siblingMenuItems"><option value=''></option></select>
+    </div>
+    <div class="form-group">
+        <label for="menuItemStatus" class="control-label">Status</label>
+        <select id='menuItemStatus' ng-model='request.shopUI.menuItemUI.menuItem.status' class='form-control' style='font-weight:bold;' ng-options="status for status in request.shopUI.referenceData.entityStatusList"></select>
+    </div>
+
+	<div class="row" ng-show='request.shopUI.menuItemUI.menuItem.category'>
+		<div class="col-lg-12">
+			<div class="col-lg-6" style='padding-bottom:20px;'>Menu Items</div>
+			<div class="col-lg-6" style='padding-bottom:20px;'>
+				<a class="pull-right" ng-click='request.shopUI.menuItemUI.showCreateMenuItemForm(request.shopUI, null, request.shopUI.menuItemUI.menuItemOriginal, true, false);'><h4><i class="glyphicon glyphicon-plus pull-right" style='margin-right:5px;'></i></h4></a>
+			</div>
+		</div>
+		<div class="col-lg-12">
+			<table class="table table-striped">
+				<thead><tr><th style='color:#666666;'><small>Name</small></th><th style='color:#666666;width:70px;' class='text-right'><small>Price</small></th><th style='color:#666666;width:70px;'><small>Status</small></th></tr></thead>
+				<tbody><tr ng-repeat='menuItem in request.shopUI.menuItemUI.menuItem.menuItems' ng-click='request.shopUI.menuItemUI.showMenuItemInModelBox(request.shopUI, null, request.shopUI.menuItemUI.menuItem, menuItem)'>
+					<td>
+						<div ng-show='menuItem.product'><strong>{{request.shopUI.shopLanguageTable[request.shopUI.util.message.getProductNameFullCode(menuItem.product)]}}</strong></div>
+						<div ng-show='menuItem.category'><strong>{{request.shopUI.shopLanguageTable[request.shopUI.util.message.getCategoryNameCode(menuItem.category)]}}</strong></div>
+					</td>
+					<td class='text-right'>
+						<div ng-show='menuItem.product'><strong>{{menuItem.price / 100 | currency}}</strong></div>
+					</td>
+					<td>{{menuItem.status}}</td>
+				</tr></tbody>
+			</table>
+		</div>
+	</div>
+
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-primary" ng-click='request.shopUI.menuItemUI.updateMenuItem(request.shopUI, request.shopUI.menuItemUI.menuItem)' ng-show='request.shopUI.menuItemUI.menuItem.menuItemId'>Save</button>
+	<button class="btn btn-warning" ng-click="cancel()">Close</button>
+</div>
+
+</div>
+</form>
+
+<%@ include file="/WEB-INF/views/FRAGMENTS/product.jspf" %>
+<%@ include file="/WEB-INF/views/FRAGMENTS/category.jspf" %>

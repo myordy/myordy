@@ -1,0 +1,59 @@
+<div id='shopContainer'>
+<div ng-show='shopUI.shopContainer.showShopList'>
+	<div class="row">
+		<div class="col-lg-6">
+			<h4 class="pull-left">Manage Shop</h4>
+		</div>
+		<div class="col-lg-6">
+			<h4><a ng-click='shopUI.showCreateShopForm()'><i class="glyphicon glyphicon-plus pull-right" style='margin-right:5px;'></i></a></h4>
+		</div>
+	</div>
+	<table class="table table-striped">
+		<thead><tr>
+			<th style='color:#666666;width:60px;'><small>ID</small></th><th style='color:#666666;'><small>Name</small></th><th style='color:#666666;width:70px;'><small>Status</small></th>
+		</tr></thead>
+		<tbody><tr ng-repeat='shop in shopUI.shopList.shops' ng-click='shopUI.shopView(shop.shopId)'>
+			<td>{{shop.shopId}}</td><td><div><strong>{{shop.languageTables[0].languageTable[shopUI.util.message.getShopNameCode(shop)]}}</strong></div></td><td>{{shop.status}}</td>
+		</tr></tbody>
+	</table>
+</div>
+<div ng-show='shopUI.shopContainer.showShopDetail'>
+	<form>
+	    <div class="form-group" ng-show='shopUI.shop.shopId'>
+	        <label for="shopId" class="control-label">Shop Id</label>
+	        <input id='shopId' class='form-control' type='text' ng-model='shopUI.shop.shopId' disabled="disabled" />
+	    </div>
+	    <div class="form-group">
+	        <label for="shopName" class="control-label">Name</label>
+	        <input id='shopName' class='form-control' type='text' ng-model='shopUI.shopLanguageTable[shopUI.util.message.getShopNameCode(shopUI.shop)]' />
+	    </div>
+	    <div class="form-group">
+	        <label for="shopStatus" class="control-label">Status</label>
+	        <select id='shopStatus' ng-model='shopUI.shop.status' class='form-control' style='font-weight:bold;' ng-options="status for status in shopUI.referenceData.entityStatusList"></select>
+	    </div>
+	    <div class="form-group">
+	    	<button type="button" class="btn btn-primary" ng-click='shopUI.createShop()' ng-show='!shopUI.shop.shopId'>Create Shop</button>
+	    	<button type="button" class="btn btn-primary" ng-click='shopUI.updateShop()' ng-show='shopUI.shop.shopId'>Save</button>
+	    </div>
+		<div ng-show='shopUI.shop.shopId'>
+		    <div class="form-group">
+				<div class="row">
+					<div class="col-lg-6">
+						<h5 class="pull-left">Menu List</h5>
+					</div>
+					<div class="col-lg-6">
+						<h4><a ng-click='shopUI.menuUI.showCreateMenuForm(shopUI)'><i class="glyphicon glyphicon-plus pull-right" style='margin-right:5px;'></i></a></h4>
+					</div>
+				</div>
+				<table class="table table-striped">
+					<thead><tr><th style='color:#666666;width:60px;'><small>ID</small></th><th style='color:#666666;'><small>Name</small></th><th style='color:#666666;width:70px;'><small>Status</small></th></tr></thead>
+					<tbody><tr ng-repeat='menu in shopUI.shop.menuList' ng-click='shopUI.menuUI.showMenuDetails(shopUI, menu)'>
+						<td>{{menu.menuId}}</td><td><div><strong>{{shopUI.shopLanguageTable[shopUI.util.message.getMenuNameCode(menu)]}}</strong></div></td><td>{{menu.status}}</td>
+					</tr></tbody>
+				</table>
+		    </div>
+		</div>
+	</form>
+</div>
+</div>
+<%@ include file="/WEB-INF/views/FRAGMENTS/menu.jspf" %>

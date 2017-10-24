@@ -1,0 +1,31 @@
+<div ng-show='true' class='media-screen-only'>
+
+<div ng-show='posUI.previousOrdersUI.container.showSearch'>
+<form name='previousOrderSearchForm'>
+
+	<div class='row' style='margin-top:20px;'>
+		<div class="col-xs-12">
+			<div class="alert alert-danger glow-alert-danger-background" ng-show='posUI.previousOrdersUI.showCallShopErrorMessage'>
+			  <strong>Sorry, confirmation taking too long.</strong> Please call <strong>{{posUI.shopLanguageTable[posUI.util.message.getShopPhoneCode(posUI.shop)]}}</strong> to get an update.
+			</div>
+			<table class="table table-striped">
+				<thead><tr><th style='color:#666666;'><small>Order Time</small></th><th style='color:#666666;'><small>Menu</small></th><th style='color:#666666;'><small>Status</small></th><th class='text-right' style='width:80px;color:#666666;'><small>Amount</small></th></tr></thead>
+				<tbody>
+					<tr ng-repeat="order in posUI.previousOrdersUI.previousOrders.items | orderBy:'-orderTime'" ng-click='posUI.previousOrdersUI.openOrdersDUS(posUI, order)'>
+						<td class=''>{{order.orderTime | date:"dd/MM/yyyy h:mm a"}}</td>
+						<td class=''>{{posUI.shopLanguageTable[posUI.util.message.getMenuNameCode({menuId:order.menuId})]}}</td>
+						<td>
+							<div ng-show='order.ordyStatus == "NEWORDY"' style='color:#FF6A00;font-weight:bold;'>Waiting Confirmaiton</div>
+							<div ng-show='order.ordyStatus == "CONFIRMED"'>Confirmed</div>
+						</td>
+						<td class='text-right'>{{posUI.cartUI.getFinalTotalAmount(posUI, order) / 100 | currency}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</form>
+</div>
+
+
+</div>
